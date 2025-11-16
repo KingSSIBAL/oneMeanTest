@@ -1,39 +1,38 @@
 # Internal utility helpers (not exported)
 
-.check_numeric_vector <- function(x, arg_name = "x") {
-  if (missing(x)) {
-    stop(sprintf("Argument '%s' is missing.", arg_name), call. = FALSE)
-  }
+.check_numeric_vector <- function(x, name = "x") {
   if (!is.numeric(x)) {
-    stop(sprintf("Argument '%s' must be numeric.", arg_name), call. = FALSE)
+    stop(sprintf("`%s` must be a numeric vector.", name), call. = FALSE)
   }
-  if (!is.vector(x)) {
-    stop(sprintf("Argument '%s' must be a numeric vector.", arg_name), call. = FALSE)
+  if (length(x) == 0L) {
+    stop(sprintf("`%s` must have length >= 1.", name), call. = FALSE)
   }
-  if (length(x) < 2L) {
-    stop(sprintf("Argument '%s' must have length at least 2.", arg_name), call. = FALSE)
-  }
-  invisible(TRUE)
 }
 
-.remove_na_with_warning <- function(x, arg_name = "x") {
+.remove_na_with_warning <- function(x, name = "x") {
   n_before <- length(x)
   x <- x[!is.na(x)]
   n_after <- length(x)
+
   if (n_after == 0L) {
-    stop(sprintf("Argument '%s' contains only NA values.", arg_name), call. = FALSE)
+    stop(sprintf("All values in `%s` are NA.", name), call. = FALSE)
   }
+
   if (n_after < n_before) {
-    warning(
-      sprintf(
-        "Removed %d NA value(s) from '%s' (n = %d -> n = %d).",
-        n_before - n_after, arg_name, n_before, n_after
-      ),
-      call. = FALSE
-    )
+    warning(sprintf(
+      "Removed %d NA value(s) from `%s` (n = %d -> n = %d).",
+      n_before - n_after, name, n_before, n_after
+    ), call. = FALSE)
   }
+
+  if (n_after < 2L) {
+    stop(sprintf("`%s` must have at least 2 non-missing values.", name),
+         call. = FALSE)
+  }
+
   x
 }
+
 
 .match_alternative <- function(alternative) {
   alt <- match.arg(alternative, c("two.sided", "less", "greater"))
