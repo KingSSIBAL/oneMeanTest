@@ -25,32 +25,46 @@ one of \code{"two.sided"}, \code{"less"}, or \code{"greater"}.}
 
 \item{conf.level}{Confidence level for the confidence interval.}
 
-\item{check_assumptions}{Logical; if TRUE, performs assumption checks.}
+\item{check_assumptions}{Logical; if \code{TRUE}, performs assumption checks
+via \code{\link{check_assumptions}} and stores the result in the returned
+object.}
 }
 \value{
 An object of class \code{"oneMeanTest"} containing:
-\item{statistic}{The t statistic.}
-\item{parameter}{Degrees of freedom.}
+\item{statistic}{Named numeric vector with the t statistic.}
+\item{parameter}{Named numeric vector with the degrees of freedom.}
 \item{p.value}{P-value of the test.}
-\item{conf.int}{Numeric vector with confidence interval.}
-\item{estimate}{Sample mean.}
-\item{null.value}{Hypothesized mean (mu0).}
-\item{alternative}{The alternative hypothesis.}
-\item{method}{Description of the method.}
-\item{data.name}{Name of the data vector.}
-\item{sample.stats}{List with n, mean, sd, and se.}
+\item{conf.int}{Numeric vector with the confidence interval for the mean,
+with attribute \code{conf.level}.}
+\item{estimate}{Named numeric vector with the sample mean.}
+\item{null.value}{Named numeric vector with the hypothesized mean (\code{mu0}).}
+\item{alternative}{Character string with the alternative hypothesis.}
+\item{method}{Description of the method used.}
+\item{data.name}{Character string with the name of the data vector.}
+\item{sample.stats}{List with \code{n}, \code{mean}, \code{sd}, and \code{se}.}
 \item{alpha}{Significance level used.}
 \item{assumptions}{Result from \code{check_assumptions()} or \code{NULL}.}
-\item{decision}{Character string: "reject H0" or "fail to reject H0".}
+\item{decision}{Character string: \code{"reject H0"} or
+\code{"fail to reject H0"}.}
 \item{interpretation}{Plain-language interpretation of the result.}
 }
 \description{
 Perform a one-sample t-test on a population mean when the population
-variance is unknown, using the Student's t-distribution.
+variance is unknown, using the Student's t-distribution. The function
+returns the usual test statistic, p-value, confidence interval, and a
+plain-language interpretation, and can optionally run assumption checks.
 }
 \examples{
+set.seed(123)
 x <- rnorm(30, mean = 5, sd = 2)
+
+# Basic two-sided test with default alpha and conf.level
 res <- one_mean_test(x, mu0 = 5)
 res
+
+# One-sided alternative and different confidence level
+res_less <- one_mean_test(x, mu0 = 5, alternative = "less",
+                          alpha = 0.01, conf.level = 0.99)
+res_less
 
 }

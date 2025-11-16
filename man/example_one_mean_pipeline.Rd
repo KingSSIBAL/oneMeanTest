@@ -27,6 +27,7 @@ example_one_mean_pipeline(
 An object of class \code{"oneMeanTest"}.
 }
 \description{
-This helper shows a simple workflow: generate data, run the one-sample t-test,
-and return the test object.
+This helper shows a simple workflow: generate data, run the one-sample
+t-test, and return the test object. This can be used in demonstrations
+and vignettes.
 }

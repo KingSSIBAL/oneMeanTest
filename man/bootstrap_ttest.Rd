@@ -16,13 +16,14 @@ bootstrap_ttest(
 \arguments{
 \item{x}{Numeric vector of observations.}
 
-\item{mu0}{Hypothesized mean.}
+\item{mu0}{Hypothesized population mean under the null hypothesis.}
 
-\item{nboot}{Number of bootstrap resamples.}
+\item{nboot}{Number of bootstrap resamples (integer, usually at least 100).}
 
 \item{conf.level}{Confidence level for the bootstrap confidence interval.}
 
-\item{alternative}{\code{"two.sided"}, \code{"less"}, or \code{"greater"}.}
+\item{alternative}{Character string specifying the alternative hypothesis,
+one of \code{"two.sided"}, \code{"less"}, or \code{"greater"}.}
 
 \item{seed}{Optional integer seed for reproducibility.}
 }
@@ -31,8 +32,9 @@ A list of class \code{"oneMeanTest_bootstrap"} with components:
 \item{t.obs}{Observed t-statistic.}
 \item{t.boot}{Numeric vector of bootstrap t-statistics.}
 \item{mean.obs}{Observed sample mean.}
-\item{mean.boot}{Bootstrap means.}
-\item{conf.int}{Bootstrap percentile confidence interval for the mean.}
+\item{mean.boot}{Numeric vector of bootstrap means.}
+\item{conf.int}{Bootstrap percentile confidence interval for the mean
+(numeric vector of length 2 with attribute \code{conf.level}).}
 \item{p.value}{Bootstrap p-value.}
 \item{nboot}{Number of bootstrap resamples.}
 \item{mu0}{Hypothesized mean.}
@@ -48,4 +50,22 @@ The function resamples the observed data with replacement, computes the
 t-statistic for each bootstrap sample, and uses the empirical distribution
 of these statistics to obtain a bootstrap p-value and a percentile
 confidence interval for the mean.
+
+This is useful for illustrating resampling-based inference and for
+comparing classical t-test results with bootstrap results.
+}
+\examples{
+set.seed(123)
+x <- rnorm(30, mean = 5, sd = 2)
+
+boot_res <- bootstrap_ttest(
+  x,
+  mu0 = 5,
+  nboot = 500,
+  conf.level = 0.95,
+  alternative = "two.sided",
+  seed = 123
+)
+boot_res
+
 }

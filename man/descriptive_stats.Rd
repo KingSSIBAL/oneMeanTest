@@ -7,15 +7,39 @@
 descriptive_stats(x, digits = 3)
 }
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector of observations.}
 
-\item{digits}{Number of digits to round in the printed output.}
+\item{digits}{Optional integer; number of digits to round in the printed
+output. If \code{NULL}, no rounding is applied.}
 }
 \value{
-A data frame with one row of summary statistics.
+A data frame with one row of summary statistics:
+\itemize{
+\item \code{n}: sample size (number of non-missing observations).
+\item \code{mean}: sample mean.
+\item \code{median}: sample median.
+\item \code{sd}: sample standard deviation.
+\item \code{variance}: sample variance.
+\item \code{se}: standard error of the mean.
+\item \code{min}, \code{q1}, \code{q3}, \code{max}: minimum, first
+quartile, third quartile, and maximum.
+\item \code{iqr}: interquartile range (\code{q3 - q1}).
+}
 }
 \description{
 Compute basic descriptive statistics for a numeric vector, including
-mean, median, standard deviation, variance, standard error, and
-selected quantiles.
+the sample size, mean, median, standard deviation, variance, standard
+error, quartiles, range, and interquartile range (IQR).
+}
+\details{
+This function is intended for numeric data such as measurements or
+scores, typically the same type of data used in the one-sample t-test.
+}
+\examples{
+x <- c(1, 2, 3, 4, 5)
+descriptive_stats(x)
+
+# Without rounding
+descriptive_stats(x, digits = NULL)
+
 }

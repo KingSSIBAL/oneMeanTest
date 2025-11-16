@@ -1,3 +1,44 @@
+# Plot methods for oneMeanTest objects
+
+#' Plot methods for one-sample mean test objects
+#'
+#' Plot methods for objects of class \code{"oneMeanTest"} produced by
+#' \code{\link{one_mean_test}}. Different values of \code{which} produce
+#' different visualizations:
+#'
+#' \itemize{
+#'   \item \code{"t"}: t-distribution with the observed test statistic and
+#'     critical values for the chosen \code{alpha}.
+#'   \item \code{"hist"}: histogram of the data with vertical lines for the
+#'     sample mean and hypothesized mean \code{mu0}.
+#'   \item \code{"qq"}: normal Q-Q plot of the data with a reference line.
+#'   \item \code{"box"}: boxplot of the data with a vertical line at \code{mu0}.
+#'   \item \code{"ci"}: confidence interval plot for the mean.
+#' }
+#'
+#' For \code{"hist"}, \code{"qq"}, and \code{"box"}, the raw data must be
+#' stored in the object via \code{attr(x, "data") <- your_data}.
+#'
+#' @param x An object of class \code{"oneMeanTest"}.
+#' @param which Character string specifying which plot to draw. One of
+#'   \code{"t"}, \code{"hist"}, \code{"qq"}, \code{"box"}, or \code{"ci"}.
+#' @param ... Additional arguments passed on to the underlying graphics
+#'   functions (currently unused).
+#'
+#' @return Invisibly returns \code{x} after producing a plot.
+#'
+#' @examples
+#' set.seed(123)
+#' x <- rnorm(30, mean = 5, sd = 2)
+#' res <- one_mean_test(x, mu0 = 5, check_assumptions = FALSE)
+#' attr(res, "data") <- x
+#'
+#' plot(res, which = "t")
+#' plot(res, which = "ci")
+#' plot(res, which = "hist")
+#' plot(res, which = "qq")
+#' plot(res, which = "box")
+#'
 #' @export
 plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) {
   which <- match.arg(which)
@@ -10,11 +51,12 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
   mu0 <- x$null.value
   alpha <- x$alpha
 
-  # Retrieve original data if available in assumptions (not ideal but simple)
-  # If you want more control, you can store x$data directly in the result object.
-  data_for_plots <- NULL
-  if (!is.null(x$assumptions) && !is.null(x$assumptions$n)) {
-    # user must supply raw data separately for plotting hist/qq/box if needed
+  # For data-based plots, we expect raw data stored in an attribute
+  if (which %in% c("hist", "qq", "box")) {
+    if (is.null(attr(x, "data"))) {
+      stop("Raw data not stored in object; cannot draw this plot. ",
+           "Use attr(result, 'data') <- x to attach the data.", call. = FALSE)
+    }
   }
 
   if (which == "t") {
@@ -43,9 +85,6 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
     )
 
   } else if (which == "hist") {
-    if (is.null(attr(x, "data"))) {
-      stop("Raw data not stored in object; cannot draw histogram.", call. = FALSE)
-    }
     y <- attr(x, "data")
     graphics::hist(
       y,
@@ -67,17 +106,11 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
     )
 
   } else if (which == "qq") {
-    if (is.null(attr(x, "data"))) {
-      stop("Raw data not stored in object; cannot draw Q-Q plot.", call. = FALSE)
-    }
     y <- attr(x, "data")
     stats::qqnorm(y, main = "Normal Q-Q plot")
     stats::qqline(y, col = "red", lwd = 2)
 
   } else if (which == "box") {
-    if (is.null(attr(x, "data"))) {
-      stop("Raw data not stored in object; cannot draw boxplot.", call. = FALSE)
-    }
     y <- attr(x, "data")
     graphics::boxplot(y, horizontal = TRUE, main = "Boxplot of data")
     graphics::abline(v = mu0, col = "red", lty = 2, lwd = 2)
@@ -102,4 +135,6 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
     graphics::abline(h = mu0, col = "red", lty = 2)
     graphics::axis(1, at = 1, labels = "mean")
   }
+
+  invisible(x)
 }

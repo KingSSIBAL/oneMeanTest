@@ -10,24 +10,44 @@
 #' of these statistics to obtain a bootstrap p-value and a percentile
 #' confidence interval for the mean.
 #'
+#' This is useful for illustrating resampling-based inference and for
+#' comparing classical t-test results with bootstrap results.
+#'
 #' @param x Numeric vector of observations.
-#' @param mu0 Hypothesized mean.
-#' @param nboot Number of bootstrap resamples.
+#' @param mu0 Hypothesized population mean under the null hypothesis.
+#' @param nboot Number of bootstrap resamples (integer, usually at least 100).
 #' @param conf.level Confidence level for the bootstrap confidence interval.
-#' @param alternative \code{"two.sided"}, \code{"less"}, or \code{"greater"}.
+#' @param alternative Character string specifying the alternative hypothesis,
+#'   one of \code{"two.sided"}, \code{"less"}, or \code{"greater"}.
 #' @param seed Optional integer seed for reproducibility.
 #'
 #' @return A list of class \code{"oneMeanTest_bootstrap"} with components:
 #'   \item{t.obs}{Observed t-statistic.}
 #'   \item{t.boot}{Numeric vector of bootstrap t-statistics.}
 #'   \item{mean.obs}{Observed sample mean.}
-#'   \item{mean.boot}{Bootstrap means.}
-#'   \item{conf.int}{Bootstrap percentile confidence interval for the mean.}
+#'   \item{mean.boot}{Numeric vector of bootstrap means.}
+#'   \item{conf.int}{Bootstrap percentile confidence interval for the mean
+#'     (numeric vector of length 2 with attribute \code{conf.level}).}
 #'   \item{p.value}{Bootstrap p-value.}
 #'   \item{nboot}{Number of bootstrap resamples.}
 #'   \item{mu0}{Hypothesized mean.}
 #'   \item{alternative}{Alternative hypothesis used.}
 #'   \item{call}{The matched function call.}
+#'
+#' @examples
+#' set.seed(123)
+#' x <- rnorm(30, mean = 5, sd = 2)
+#'
+#' boot_res <- bootstrap_ttest(
+#'   x,
+#'   mu0 = 5,
+#'   nboot = 500,
+#'   conf.level = 0.95,
+#'   alternative = "two.sided",
+#'   seed = 123
+#' )
+#' boot_res
+#'
 #' @export
 bootstrap_ttest <- function(
     x,
@@ -70,7 +90,7 @@ bootstrap_ttest <- function(
     mean_boot[b] <- mean_b
   }
 
-  # Bootstrap p-value based on t distribution
+  # Bootstrap p-value based on empirical t distribution
   if (alternative == "two.sided") {
     p_boot <- mean(abs(t_boot) >= abs(t_obs))
   } else if (alternative == "greater") {
@@ -81,7 +101,11 @@ bootstrap_ttest <- function(
 
   # Percentile CI for the mean
   alpha <- 1 - conf.level
-  ci_boot <- stats::quantile(mean_boot, probs = c(alpha / 2, 1 - alpha / 2), names = FALSE)
+  ci_boot <- stats::quantile(
+    mean_boot,
+    probs = c(alpha / 2, 1 - alpha / 2),
+    names = FALSE
+  )
   names(ci_boot) <- c("lower", "upper")
 
   res <- list(
@@ -100,6 +124,17 @@ bootstrap_ttest <- function(
   res
 }
 
+#' Print method for bootstrap one-sample t-test
+#'
+#' Pretty printing for objects of class \code{"oneMeanTest_bootstrap"} produced
+#' by \code{\link{bootstrap_ttest}}.
+#'
+#' @param x An object of class \code{"oneMeanTest_bootstrap"}.
+#' @param digits Number of digits to use for printing numeric values.
+#' @param ... Unused; included for method compatibility.
+#'
+#' @return Invisibly returns \code{x}.
+#'
 #' @export
 print.oneMeanTest_bootstrap <- function(x, digits = 4, ...) {
   cat("Bootstrap one-sample t-test\n\n")

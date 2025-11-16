@@ -7,21 +7,43 @@
 check_assumptions(x, alpha = 0.05, verbose = TRUE)
 }
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector of observations.}
 
-\item{alpha}{Significance level for the Shapiro-Wilk normality test.}
+\item{alpha}{Significance level for the Shapiro–Wilk normality test.}
 
-\item{verbose}{Logical; if TRUE, prints a short textual summary.}
+\item{verbose}{Logical; if \code{TRUE}, prints a short textual summary of
+the results to the console.}
 }
 \value{
-A list with components:
-\item{shapiro}{List with W statistic, p-value, and decision.}
+A list of class \code{"oneMeanTest_assumptions"} with components:
+\item{shapiro}{List with W statistic, p-value, \code{alpha}, and a logical
+flag \code{normal} indicating if normality is acceptable (or \code{NA}
+if the test was not run).}
 \item{outliers}{Numeric vector of detected outliers (possibly empty).}
 \item{n}{Sample size after removing NA values.}
-\item{normal}{Logical flag indicating if normality is acceptable.}
+\item{normal}{Logical flag indicating if normality is acceptable
+(\code{TRUE} / \code{FALSE}), or \code{FALSE} if the Shapiro–Wilk test
+rejects at the chosen \code{alpha}.}
 \item{message}{Textual summary of the diagnostics.}
 }
 \description{
 Check normality and outliers for a numeric sample, as typically required
 for a one-sample t-test on a population mean with unknown variance.
+}
+\details{
+The function performs a Shapiro–Wilk normality test (when the sample size
+is between 3 and 5000) and detects outliers using the 1.5*IQR rule. It is
+used inside \code{\link{one_mean_test}} when \code{check_assumptions = TRUE}.
+}
+\examples{
+set.seed(123)
+x <- rnorm(30, mean = 5, sd = 2)
+
+# Verbose output
+check_assumptions(x, alpha = 0.05, verbose = TRUE)
+
+# Silent output (used internally by one_mean_test)
+a_res <- check_assumptions(x, alpha = 0.05, verbose = FALSE)
+a_res
+
 }

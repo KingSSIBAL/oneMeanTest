@@ -3,16 +3,37 @@
 #' Check normality and outliers for a numeric sample, as typically required
 #' for a one-sample t-test on a population mean with unknown variance.
 #'
-#' @param x A numeric vector.
-#' @param alpha Significance level for the Shapiro-Wilk normality test.
-#' @param verbose Logical; if TRUE, prints a short textual summary.
+#' The function performs a Shapiro–Wilk normality test (when the sample size
+#' is between 3 and 5000) and detects outliers using the 1.5*IQR rule. It is
+#' used inside \code{\link{one_mean_test}} when \code{check_assumptions = TRUE}.
 #'
-#' @return A list with components:
-#'   \item{shapiro}{List with W statistic, p-value, and decision.}
+#' @param x A numeric vector of observations.
+#' @param alpha Significance level for the Shapiro–Wilk normality test.
+#' @param verbose Logical; if \code{TRUE}, prints a short textual summary of
+#'   the results to the console.
+#'
+#' @return A list of class \code{"oneMeanTest_assumptions"} with components:
+#'   \item{shapiro}{List with W statistic, p-value, \code{alpha}, and a logical
+#'     flag \code{normal} indicating if normality is acceptable (or \code{NA}
+#'     if the test was not run).}
 #'   \item{outliers}{Numeric vector of detected outliers (possibly empty).}
 #'   \item{n}{Sample size after removing NA values.}
-#'   \item{normal}{Logical flag indicating if normality is acceptable.}
+#'   \item{normal}{Logical flag indicating if normality is acceptable
+#'     (\code{TRUE} / \code{FALSE}), or \code{FALSE} if the Shapiro–Wilk test
+#'     rejects at the chosen \code{alpha}.}
 #'   \item{message}{Textual summary of the diagnostics.}
+#'
+#' @examples
+#' set.seed(123)
+#' x <- rnorm(30, mean = 5, sd = 2)
+#'
+#' # Verbose output
+#' check_assumptions(x, alpha = 0.05, verbose = TRUE)
+#'
+#' # Silent output (used internally by one_mean_test)
+#' a_res <- check_assumptions(x, alpha = 0.05, verbose = FALSE)
+#' a_res
+#'
 #' @export
 check_assumptions <- function(x, alpha = 0.05, verbose = TRUE) {
   .check_numeric_vector(x, "x")

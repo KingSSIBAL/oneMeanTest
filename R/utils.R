@@ -1,4 +1,8 @@
 # Internal utility helpers (not exported)
+#
+# These functions are used internally throughout the package for input
+# validation and argument checking. They are not exported and are intended
+# for use only inside other package functions.
 
 .check_numeric_vector <- function(x, name = "x") {
   if (!is.numeric(x)) {
@@ -32,7 +36,6 @@
 
   x
 }
-
 
 .match_alternative <- function(alternative) {
   alt <- match.arg(alternative, c("two.sided", "less", "greater"))

@@ -1,4 +1,9 @@
 # Internal helpers for one-sample t-test calculations (not exported)
+#
+# These functions compute the core quantities for the one-sample t-test:
+# the t statistic, its p-value under different alternatives, and the
+# confidence interval for the mean. They are used internally by
+# \code{one_mean_test()} and are not exported.
 
 .t_statistic_one_mean <- function(x, mu0) {
   n <- length(x)

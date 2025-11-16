@@ -10,7 +10,7 @@ Authors@R: c(
 Description: Implements a one-sample t-test for a population mean when the 
     population variance is unknown, including assumption checks, descriptive 
     statistics, and basic plotting utilities for teaching purposes.
-License: GPL-3
+License: License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -19,8 +19,7 @@ Depends:
     R (>= 4.0.0)
 Imports:
     stats,
-    graphics,
-    grDevices
+    graphics
 Suggests:
     testthat (>= 3.0.0),
     knitr,
