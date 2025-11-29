@@ -1,0 +1,5 @@
+^doc$
+^Meta$
+^\.github$
+^ttest_report\.txt$
+^LICENSE\.md$

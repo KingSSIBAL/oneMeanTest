@@ -2,15 +2,41 @@
 % Please edit documentation in R/report_methods.R
 \name{report}
 \alias{report}
-\title{Report Method for oneMeanTest}
+\alias{report.oneMeanTest}
+\title{Report Methods for oneMeanTest Objects}
 \usage{
 report(x, format = "console", ...)
+
+\method{report}{oneMeanTest}(x, format = "console", ...)
 }
 \arguments{
 \item{x}{Object of class oneMeanTest}
 
 \item{format}{Output format: "console", "markdown", or "latex"}
+
+\item{...}{Additional arguments (currently unused)}
+}
+\value{
+Formatted report as character string
 }
 \description{
-Report Method for oneMeanTest
+Generate formatted reports of t-test results in different output formats.
+This provides an alternative to format_ttest_report() with support for
+multiple output formats.
+}
+\examples{
+\dontrun{
+set.seed(123)
+x <- rnorm(30, mean = 5, sd = 2)
+result <- one_mean_test(x, mu0 = 5)
+
+# Console format (default)
+cat(report(result, format = "console"))
+
+# Markdown format
+cat(report(result, format = "markdown"))
+
+# LaTeX format
+cat(report(result, format = "latex"))
+}
 }

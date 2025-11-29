@@ -14,7 +14,8 @@ Depends:
     R (>= 3.5.0)
 Imports:
     stats,
-    graphics
+    graphics,
+    utils
 Suggests:
     testthat (>= 3.0.0),
     knitr,
