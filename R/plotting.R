@@ -41,17 +41,25 @@
 #'
 #' @export
 plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) {
+  # Match plot type argument
   which <- match.arg(which)
-  ss <- x$sample.stats
-  n <- ss$n
-  mean_x <- ss$mean
-  sd_x <- ss$sd
-  df <- x$parameter
-  t_stat <- x$statistic
-  mu0 <- x$null.value
-  alpha <- x$alpha
+  
+  # Extract key statistics from the test result object
+  ss <- x$sample.stats   # Sample statistics (n, mean, sd, se)
+  n <- ss$n              # Sample size
+  mean_x <- ss$mean      # Sample mean
+  sd_x <- ss$sd          # Sample standard deviation
+  df <- x$parameter      # Degrees of freedom
+  t_stat <- x$statistic  # Observed t-statistic
+  mu0 <- x$null.value    # Hypothesized mean
+  alpha <- x$alpha       # Significance level
 
-  # For data-based plots, we expect raw data stored in an attribute
+  # ============================================================
+  # CHECK FOR RAW DATA (needed for some plots)
+  # ============================================================
+  
+  # Some plots require the original data, not just summary statistics
+  # Check if data is attached as an attribute
   if (which %in% c("hist", "qq", "box")) {
     if (is.null(attr(x, "data"))) {
       stop("Raw data not stored in object; cannot draw this plot. ",
@@ -59,22 +67,36 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
     }
   }
 
+  # ============================================================
+  # PLOT: T-DISTRIBUTION WITH TEST STATISTIC
+  # ============================================================
+  
   if (which == "t") {
-    # t-distribution with rejection region
+    # Create sequence of t-values for plotting the density curve
+    # Range from -4 to 4 covers most of the distribution
     curve_x <- seq(-4, 4, length.out = 400)
+    
+    # Plot the t-distribution density curve
+    # This shows the theoretical distribution under H0
     graphics::plot(
       curve_x,
-      stats::dt(curve_x, df = df),
-      type = "l",
+      stats::dt(curve_x, df = df),  # t-density with df degrees of freedom
+      type = "l",                     # Line plot
       xlab = "t",
       ylab = "Density",
       main = "t-distribution with test statistic"
     )
 
-    # critical values (two-sided)
+    # Add vertical lines for critical values (rejection region boundaries)
+    # For two-sided test: both positive and negative critical values
     t_crit <- stats::qt(1 - alpha / 2, df = df)
     graphics::abline(v = c(-t_crit, t_crit), col = "red", lty = 2)
+    
+    # Add vertical line for observed t-statistic
+    # This shows where our sample falls relative to the null distribution
     graphics::abline(v = t_stat, col = "blue", lwd = 2)
+    
+    # Add legend to identify the lines
     graphics::legend(
       "topright",
       legend = c("t density", "Critical values", "Observed t"),
@@ -84,18 +106,32 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
       bty = "n"
     )
 
+  # ============================================================
+  # PLOT: HISTOGRAM OF DATA
+  # ============================================================
+    
   } else if (which == "hist") {
+    # Get raw data from attribute
     y <- attr(x, "data")
+    
+    # Create histogram with automatic binning (Freedman-Diaconis rule)
     graphics::hist(
       y,
-      breaks = "FD",
-      col = "grey90",
-      border = "white",
+      breaks = "FD",        # Freedman-Diaconis binning rule
+      col = "grey90",       # Light grey bars
+      border = "white",     # White borders between bars
       xlab = "x",
       main = "Histogram of data"
     )
+    
+    # Add vertical line for sample mean (blue)
     graphics::abline(v = mean(y), col = "blue", lwd = 2)
+    
+    # Add vertical line for hypothesized mean (red, dashed)
+    # This shows how the data center compares to H0
     graphics::abline(v = mu0, col = "red", lty = 2, lwd = 2)
+    
+    # Add legend
     graphics::legend(
       "topright",
       legend = c("Sample mean", "Hypothesized mean"),
@@ -105,36 +141,78 @@ plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) 
       bty = "n"
     )
 
+  # ============================================================
+  # PLOT: Q-Q PLOT (NORMALITY CHECK)
+  # ============================================================
+    
   } else if (which == "qq") {
+    # Q-Q plot compares sample quantiles to theoretical normal quantiles
+    # Points should fall on reference line if data are normally distributed
     y <- attr(x, "data")
+    
+    # Create Q-Q plot
     stats::qqnorm(y, main = "Normal Q-Q plot")
+    
+    # Add reference line (expected pattern under normality)
+    # Line passes through Q1 and Q3 of both distributions
     stats::qqline(y, col = "red", lwd = 2)
 
+  # ============================================================
+  # PLOT: BOXPLOT
+  # ============================================================
+    
   } else if (which == "box") {
+    # Boxplot shows distribution shape and identifies outliers
     y <- attr(x, "data")
+    
+    # Create horizontal boxplot
     graphics::boxplot(y, horizontal = TRUE, main = "Boxplot of data")
+    
+    # Add vertical line for hypothesized mean
+    # Shows where H0 falls relative to data distribution
     graphics::abline(v = mu0, col = "red", lty = 2, lwd = 2)
 
+  # ============================================================
+  # PLOT: CONFIDENCE INTERVAL
+  # ============================================================
+    
   } else if (which == "ci") {
+    # Visual representation of confidence interval
     ci <- x$conf.int
+    
+    # Create plot with single point at sample mean
+    # Y-axis limits set to span the confidence interval
     graphics::plot(
       1, mean_x,
       xlim = c(0.5, 1.5),
       ylim = range(ci),
-      xaxt = "n",
+      xaxt = "n",              # Suppress x-axis (not meaningful)
       xlab = "",
       ylab = "Mean",
       main = "Confidence interval for the mean"
     )
+    
+    # Draw error bar representing the confidence interval
+    # Two-headed arrow from lower to upper bound
     graphics::arrows(
-      x0 = 1, y0 = ci[1L],
-      x1 = 1, y1 = ci[2L],
-      angle = 90, code = 3, length = 0.1
+      x0 = 1, y0 = ci[1L],   # Start at lower bound
+      x1 = 1, y1 = ci[2L],   # End at upper bound
+      angle = 90,            # 90-degree arrow heads
+      code = 3,              # Arrow heads on both ends
+      length = 0.1           # Arrow head size
     )
+    
+    # Plot sample mean as a point
     graphics::points(1, mean_x, pch = 19, col = "blue")
+    
+    # Add horizontal line for hypothesized mean
+    # Shows if mu0 falls within the confidence interval
     graphics::abline(h = mu0, col = "red", lty = 2)
+    
+    # Add simple x-axis label
     graphics::axis(1, at = 1, labels = "mean")
   }
 
+  # Return the input object invisibly (allows chaining)
   invisible(x)
 }

@@ -57,70 +57,140 @@ bootstrap_ttest <- function(
     alternative = c("two.sided", "less", "greater"),
     seed = NULL
 ) {
+  # ============================================================
+  # INPUT VALIDATION
+  # ============================================================
+  
+  # Ensure x is numeric and non-empty
   .check_numeric_vector(x, "x")
+  
+  # Remove NA values with warning if present
   x <- .remove_na_with_warning(x, "x")
+  
+  # Validate confidence level
   .check_conf_level(conf.level)
+  
+  # Match and validate alternative hypothesis
   alternative <- .match_alternative(alternative)
 
+  # Set random seed for reproducibility if provided
   if (!is.null(seed)) {
     set.seed(seed)
   }
+  
+  # Validate number of bootstrap resamples
+  # Require at least 100 for reasonable approximation of sampling distribution
   if (!is.numeric(nboot) || length(nboot) != 1L || nboot < 100) {
     stop("nboot must be a single integer >= 100.", call. = FALSE)
   }
   nboot <- as.integer(nboot)
 
-  # Observed statistics
+  # ============================================================
+  # CALCULATE OBSERVED STATISTICS
+  # ============================================================
+  
+  # Compute the observed t-statistic from the original sample
+  # This serves as the reference point for the bootstrap distribution
   core <- .t_statistic_one_mean(x, mu0 = mu0)
-  t_obs <- core$t
-  mean_obs <- core$mean
-  n <- core$n
+  t_obs <- core$t        # Observed t-statistic
+  mean_obs <- core$mean  # Observed sample mean
+  n <- core$n            # Sample size
 
-  # Bootstrap
-  t_boot <- numeric(nboot)
-  mean_boot <- numeric(nboot)
+  # ============================================================
+  # BOOTSTRAP RESAMPLING LOOP
+  # ============================================================
+  
+  # Pre-allocate vectors to store bootstrap results
+  # This is more efficient than growing vectors in the loop
+  t_boot <- numeric(nboot)     # Bootstrap t-statistics
+  mean_boot <- numeric(nboot)  # Bootstrap sample means
 
+  # Perform bootstrap resampling
+  # Each iteration:
+  # 1. Draw n observations from x WITH replacement (key bootstrap principle)
+  # 2. Calculate t-statistic for the bootstrap sample
+  # 3. Store results for later analysis
   for (b in seq_len(nboot)) {
+    # Draw bootstrap sample: sample with replacement from original data
+    # Size equals original sample size to preserve sample size variability
     xb <- sample(x, size = n, replace = TRUE)
+    
+    # Calculate statistics for this bootstrap sample
     n_b <- length(xb)
-    mean_b <- mean(xb)
-    sd_b <- stats::sd(xb)
-    se_b <- sd_b / sqrt(n_b)
+    mean_b <- mean(xb)              # Bootstrap sample mean
+    sd_b <- stats::sd(xb)           # Bootstrap sample SD
+    se_b <- sd_b / sqrt(n_b)        # Bootstrap standard error
+    
+    # Compute bootstrap t-statistic using same null hypothesis
+    # t* = (x̄* - μ₀) / (s*/√n*)
     t_boot[b] <- (mean_b - mu0) / se_b
+    
+    # Store bootstrap mean for percentile CI calculation
     mean_boot[b] <- mean_b
   }
 
-  # Bootstrap p-value based on empirical t distribution
+  # ============================================================
+  # CALCULATE BOOTSTRAP P-VALUE
+  # ============================================================
+  
+  # Compute p-value from empirical bootstrap distribution
+  # The p-value is the proportion of bootstrap statistics
+  # as extreme or more extreme than the observed statistic
+  
   if (alternative == "two.sided") {
+    # Two-tailed test: count |t*| >= |t_obs|
+    # Proportion of bootstrap statistics with absolute value
+    # greater than or equal to observed absolute value
     p_boot <- mean(abs(t_boot) >= abs(t_obs))
+    
   } else if (alternative == "greater") {
+    # Right-tailed test: count t* >= t_obs
+    # Proportion of bootstrap statistics greater than observed
     p_boot <- mean(t_boot >= t_obs)
+    
   } else {
+    # Left-tailed test: count t* <= t_obs
+    # Proportion of bootstrap statistics less than observed
     p_boot <- mean(t_boot <= t_obs)
   }
 
-  # Percentile CI for the mean
+  # ============================================================
+  # CALCULATE PERCENTILE CONFIDENCE INTERVAL
+  # ============================================================
+  
+  # Construct confidence interval using percentile method
+  # Take α/2 and 1-α/2 quantiles of bootstrap mean distribution
+  # This is the bootstrap percentile interval, one of several bootstrap CI methods
+  
   alpha <- 1 - conf.level
   ci_boot <- stats::quantile(
     mean_boot,
-    probs = c(alpha / 2, 1 - alpha / 2),
+    probs = c(alpha / 2, 1 - alpha / 2),  # Lower and upper percentiles
     names = FALSE
   )
   names(ci_boot) <- c("lower", "upper")
 
+  # ============================================================
+  # BUILD AND RETURN RESULT OBJECT
+  # ============================================================
+  
+  # Construct S3 object containing all bootstrap results
   res <- list(
-    t.obs = t_obs,
-    t.boot = t_boot,
-    mean.obs = mean_obs,
-    mean.boot = mean_boot,
-    conf.int = structure(ci_boot, conf.level = conf.level),
-    p.value = p_boot,
-    nboot = nboot,
-    mu0 = mu0,
-    alternative = alternative,
-    call = match.call()
+    t.obs = t_obs,                                      # Observed t-statistic
+    t.boot = t_boot,                                    # Bootstrap t-distribution
+    mean.obs = mean_obs,                                # Observed mean
+    mean.boot = mean_boot,                              # Bootstrap mean distribution
+    conf.int = structure(ci_boot, conf.level = conf.level),  # Percentile CI
+    p.value = p_boot,                                   # Bootstrap p-value
+    nboot = nboot,                                      # Number of resamples
+    mu0 = mu0,                                          # Null hypothesis value
+    alternative = alternative,                          # Alternative hypothesis
+    call = match.call()                                 # Function call for reference
   )
+  
+  # Assign S3 class for custom print/plot methods
   class(res) <- "oneMeanTest_bootstrap"
+  
   res
 }
 
