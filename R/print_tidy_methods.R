@@ -1,3 +1,10 @@
+#' Print Method for oneMeanTest Objects
+#' 
+#' Prints a formatted summary of one-sample t-test results
+#' 
+#' @param x An object of class oneMeanTest
+#' @param digits Number of digits to display
+#' @param ... Additional arguments (not currently used)
 #' @export
 print.oneMeanTest <- function(x, digits = 4, ...) {
   cat(x$method, "\n")
@@ -16,6 +23,16 @@ print.oneMeanTest <- function(x, digits = 4, ...) {
   cat(sprintf("  t     = %.*f\n", digits, x$statistic))
   cat(sprintf("  df    = %d\n", x$parameter))
   cat(sprintf("  p-val = %.*g\n", digits, x$p.value))
+  
+  # Display critical value (using Unicode \u00b1 for ±)
+  if (!is.null(x$t.critical)) {
+    if (x$alternative == "two.sided") {
+      cat(sprintf("  t-crit = \u00b1%.*f\n", digits, x$t.critical["upper"]))
+    } else {
+      cat(sprintf("  t-crit = %.*f\n", digits, x$t.critical["critical"]))
+    }
+  }
+  
   cat(sprintf("  alpha = %.*f\n\n", digits, x$alpha))
 
   ci <- x$conf.int
@@ -30,10 +47,14 @@ print.oneMeanTest <- function(x, digits = 4, ...) {
   invisible(x)
 }
 
+#' Summary Method for oneMeanTest Objects
+#' 
+#' Provides a summary of one-sample t-test results
+#' 
+#' @param object An object of class oneMeanTest
+#' @param ... Additional arguments passed to print method
 #' @export
 summary.oneMeanTest <- function(object, ...) {
-  # For now, summary returns the object itself, but you could
-  # enrich this with more detailed breakdown.
-  print(object)
+  print(object, ...)
   invisible(object)
 }

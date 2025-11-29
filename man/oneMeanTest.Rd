@@ -12,6 +12,6 @@ with assumption checks, descriptive statistics, and basic plotting utilities
 for educational use.
 }
 \author{
-\strong{Maintainer}: Group 1 3L STAT181 \email{group1_3L@example.com}
+\strong{Maintainer}: Your Name \email{your.email@example.com}
 
 }

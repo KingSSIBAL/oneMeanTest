@@ -95,6 +95,7 @@ one_mean_test <- function(
     df,
     p_val
   )
+t_critical <- .calculate_t_critical(alternative, alpha, df)
 
   # Optional assumption checks
   assumptions_res <- NULL
@@ -110,6 +111,7 @@ one_mean_test <- function(
     estimate = c(mean = core$mean),
     null.value = c(mu = mu0),
     alternative = alternative,
+    t.critical = t_critical,
     method = "One-sample t-test for a population mean (unknown variance)",
     data.name = data_name,
     sample.stats = list(

@@ -1,27 +1,23 @@
 Package: oneMeanTest
-Type: Package
-Title: One-Sample t-Test for a Population Mean with Unknown Variance
+Title: One-Sample T-Test for Population Mean with Unknown Variance
 Version: 0.1.0
-Authors@R: c(
-    person("Group 1 3L", "STAT181", 
-           email = "group1_3L@example.com",
-           role = c("aut", "cre"))
-  )
-Description: Implements a one-sample t-test for a population mean when the 
-    population variance is unknown, including assumption checks, descriptive 
-    statistics, and basic plotting utilities for teaching purposes.
-License: License: GPL-3 + file LICENSE
+Authors@R: 
+    person("Your", "Name", , "your.email@example.com", role = c("aut", "cre"))
+Description: Perform one-sample t-tests with comprehensive reporting,
+    assumption checking, bootstrap inference, and visualization. Developed
+    for STAT 181 Statistical Computing at UP Diliman.
+License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends: 
-    R (>= 4.0.0)
+    R (>= 3.5.0)
 Imports:
     stats,
     graphics
 Suggests:
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr

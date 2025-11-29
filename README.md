@@ -67,7 +67,6 @@ res # print main results
 plot(res, "t") # t-distribution with test statistic
 plot(res, "ci") # confidence interval for the mean
 
-text
 
 ## When to use this package
 
