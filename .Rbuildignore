@@ -3,3 +3,6 @@
 ^\.github$
 ^ttest_report\.txt$
 ^LICENSE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
