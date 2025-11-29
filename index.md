@@ -2,7 +2,7 @@
 
 An R package for performing a one-sample t-test for a population mean
 when the variance is unknown, developed as a STAT 181 (Statistical
-Computing) project at the Institute of Statistics, UP Diliman.
+Computing) project at the Institute of Statistics, UP Los Banos.
 
 ## Installation
 
