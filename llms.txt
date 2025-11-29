@@ -1,0 +1,126 @@
+# oneMeanTest
+
+An R package for performing a one-sample t-test for a population mean
+when the variance is unknown, developed as a STAT 181 (Statistical
+Computing) project at the Institute of Statistics, UP Diliman.
+
+## Installation
+
+You can install the development version from GitHub:
+
+install.packages(“devtools”) \# if needed
+devtools::install_github(“KingSSIBAL/oneMeantTest”)
+
+Then load the package:
+
+library(oneMeanTest)
+
+## Main functionality
+
+- [`one_mean_test()`](reference/one_mean_test.md)  
+  Perform a one-sample t-test for a population mean with unknown
+  variance.  
+  Returns:
+
+  - test statistic and degrees of freedom
+  - p-value
+  - confidence interval for the mean
+  - decision to reject or fail to reject (H_0)
+  - plain-language interpretation
+  - optional assumption checks
+
+- [`descriptive_stats()`](reference/descriptive_stats.md)  
+  Basic descriptive statistics (n, mean, median, sd, se, variance,
+  quantiles, IQR) for a numeric sample.
+
+- [`check_assumptions()`](reference/check_assumptions.md)  
+  Check normality and other basic assumptions for using the one-sample
+  t-test.
+
+- [`bootstrap_ttest()`](reference/bootstrap_ttest.md)  
+  Bootstrap-based one-sample t-test: bootstrap distribution of the
+  t-statistic, bootstrap p-value, and percentile CI for the mean.
+
+- [`power_analysis_one_mean()`](reference/power_analysis_one_mean.md)  
+  Wrapper around
+  [`stats::power.t.test()`](https://rdrr.io/r/stats/power.t.test.html)
+  for one-sample t-test power analysis (solve for power or for required
+  sample size).
+
+- [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods for
+  objects of class `oneMeanTest` and `oneMeanTest_bootstrap`  
+  Visualizations including:
+
+  - t-distribution with observed statistic and critical region
+  - histogram and boxplot of the data with (\_0) and sample mean
+  - normal Q-Q plot
+  - confidence interval plot for the mean
+
+## Quick example
+
+library(oneMeanTest)
+
+set.seed(123) x \<- rnorm(30, mean = 5, sd = 2)
+
+res \<- one_mean_test( x, mu0 = 5, alternative = “two.sided”, alpha =
+0.05, conf.level = 0.95, check_assumptions = TRUE )
+
+res \# print main results plot(res, “t”) \# t-distribution with test
+statistic plot(res, “ci”) \# confidence interval for the mean
+
+## When to use this package
+
+Use `oneMeanTest` when:
+
+- You have one numeric sample (independent observations).
+- You want to test a hypothesis about a single population mean with
+  unknown variance.
+- The population is approximately normal (or the sample size is
+  moderately large).
+- You want classical t-test results, and optionally bootstrap-based
+  inference and power analysis.
+
+This package was created for STAT 181, 1st Semester 2025–2026, as an
+educational tool for understanding the one-sample t-test and related
+concepts.
+
+# Package index
+
+## All functions
+
+- [`bootstrap_ttest()`](bootstrap_ttest.md) : Bootstrap one-sample
+  t-test
+- [`check_assumptions()`](check_assumptions.md) : Assumption checks for
+  one-sample t-test
+- [`descriptive_stats()`](descriptive_stats.md) : Descriptive statistics
+  for a numeric sample
+- [`example_one_mean_pipeline()`](example_one_mean_pipeline.md) :
+  Example analysis pipeline
+- [`format_ttest_report()`](format_ttest_report.md) : Format T-test
+  Report
+- [`generate_example_scores()`](generate_example_scores.md) : Generate
+  example test score data
+- [`generate_example_weights()`](generate_example_weights.md) : Generate
+  example product weight data
+- [`oneMeanTest-package`](oneMeanTest.md)
+  [`oneMeanTest`](oneMeanTest.md) : oneMeanTest: One-sample t-test
+  package
+- [`one_mean_test()`](one_mean_test.md) : One-sample t-test for a
+  population mean (unknown variance)
+- [`plot(`*`<oneMeanTest>`*`)`](plot.oneMeanTest.md) : Plot methods for
+  one-sample mean test objects
+- [`power_analysis_one_mean()`](power_analysis_one_mean.md) : Power
+  analysis for one-sample t-test
+- [`print(`*`<oneMeanTest>`*`)`](print.oneMeanTest.md) : Print Method
+  for oneMeanTest Objects
+- [`print(`*`<oneMeanTest_bootstrap>`*`)`](print.oneMeanTest_bootstrap.md)
+  : Print method for bootstrap one-sample t-test
+- [`report()`](report.md) : Report Methods for oneMeanTest Objects
+- [`summary(`*`<oneMeanTest>`*`)`](summary.oneMeanTest.md) : Summary
+  Method for oneMeanTest Objects
+
+# Articles
+
+### All vignettes
+
+- [Introduction to oneMeanTest](oneMeanTest-intro.md):
