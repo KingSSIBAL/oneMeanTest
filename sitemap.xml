@@ -1,0 +1,26 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/oneMeanTest-intro.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/bootstrap_ttest.html</loc></url>
+<url><loc>/reference/check_assumptions.html</loc></url>
+<url><loc>/reference/descriptive_stats.html</loc></url>
+<url><loc>/reference/dot-generate_interpretation.html</loc></url>
+<url><loc>/reference/example_one_mean_pipeline.html</loc></url>
+<url><loc>/reference/format_ttest_report.html</loc></url>
+<url><loc>/reference/generate_example_scores.html</loc></url>
+<url><loc>/reference/generate_example_weights.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/oneMeanTest.html</loc></url>
+<url><loc>/reference/one_mean_test.html</loc></url>
+<url><loc>/reference/plot.oneMeanTest.html</loc></url>
+<url><loc>/reference/power_analysis_one_mean.html</loc></url>
+<url><loc>/reference/print.oneMeanTest.html</loc></url>
+<url><loc>/reference/print.oneMeanTest_bootstrap.html</loc></url>
+<url><loc>/reference/report.html</loc></url>
+<url><loc>/reference/summary.oneMeanTest.html</loc></url>
+</urlset>
+
