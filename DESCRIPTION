@@ -2,10 +2,10 @@ Package: oneMeanTest
 Title: One-Sample T-Test for Population Mean with Unknown Variance
 Version: 0.1.0
 Authors@R: 
-    person("Your", "Name", , "your.email@example.com", role = c("aut", "cre"))
+    person("Reijel", "Agub", , "rcagub@up.edu.ph", role = c("aut", "cre"))
 Description: Perform one-sample t-tests with comprehensive reporting,
     assumption checking, bootstrap inference, and visualization. Developed
-    for STAT 181 Statistical Computing at UP Diliman.
+    for STAT 181 Statistical Computing at UP Los Banos.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -14,11 +14,12 @@ Depends:
     R (>= 3.5.0)
 Imports:
     stats,
-    graphics,
-    utils
+    graphics
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    covr
+    covr,
+    ggplot2,
+    patchwork
 VignetteBuilder: knitr

@@ -6,3 +6,10 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^.*\.RData$
+^\.Rproj$
+\.DS_Store
+\.Rhistory
+\.Rapp.history
+\.git.*
+^ttest_report\.txt$

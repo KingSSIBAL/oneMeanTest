@@ -12,6 +12,6 @@ with assumption checks, descriptive statistics, and basic plotting utilities
 for educational use.
 }
 \author{
-\strong{Maintainer}: Your Name \email{your.email@example.com}
+\strong{Maintainer}: Reijel Agub \email{rcagub@up.edu.ph}
 
 }
