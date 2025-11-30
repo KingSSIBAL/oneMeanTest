@@ -130,17 +130,17 @@ one_mean_test <- function(
   # Build plain-language interpretation of the test results
   # Includes: decision, sample mean, hypothesized mean, test statistic, p-value
   interp <- sprintf(
-    "At alpha = %.3f, we %s the null hypothesis that the population mean equals %.3f. The sample mean (%.3f) is %s %.3f (t = %.3f, df = %d, p-value = %.4f).",
-    alpha,
-    if (decision == "reject H0") "reject" else "fail to reject",
-    mu0,
-    core$mean,
-    alt_text,
-    mu0,
-    t_stat,
-    df,
-    p_val
-  )
+      "At alpha = %.4f, we %s the null hypothesis that the population mean equals %.4f. The sample mean (%.4f) is %s %.4f (t = %.4f, df = %d, p-value = %.4f).",
+      alpha,
+      if (decision == "reject H0") "reject" else "fail to reject",
+      mu0,
+      core$mean,
+      alt_text,
+      mu0,
+      t_stat,
+      df,
+      p_val
+    )
   
   # ============================================================
   # CALCULATE CRITICAL VALUES

@@ -1,3 +1,6 @@
+#' @importFrom stats runif
+NULL
+
 # Internal utility helpers (not exported)
 #
 # These functions are used internally throughout the package for input
@@ -104,7 +107,6 @@
 #' @keywords internal
 #' @noRd
 .custom_quantile <- function(x, probs = c(0, 0.25, 0.5, 0.75, 1), names = TRUE) {
-  # Remove NAs
   x <- x[!is.na(x)]
   n <- length(x)
   
@@ -112,36 +114,31 @@
     stop("Cannot compute quantiles of empty vector.", call. = FALSE)
   }
   
-  # Sort the data
   x_sorted <- sort(x)
-  
-  # Initialize result vector
   result <- numeric(length(probs))
   
-  # Compute each quantile
   for (i in seq_along(probs)) {
     p <- probs[i]
     
-    # Type 7 algorithm (R's default)
-    # h = (n-1) * p + 1
-    h <- (n - 1) * p + 1
+    # Add boundary checks
+    if (p < 0 || p > 1) {
+      stop("Probabilities must be between 0 and 1.", call. = FALSE)
+    }
     
-    # h_floor is the lower index
+    h <- (n - 1) * p + 1
     h_floor <- floor(h)
     
-    # Handle edge cases
     if (h_floor < 1) {
       result[i] <- x_sorted[1]
     } else if (h_floor >= n) {
       result[i] <- x_sorted[n]
     } else {
-      # Linear interpolation between x[h_floor] and x[h_floor + 1]
       h_frac <- h - h_floor
-      result[i] <- x_sorted[h_floor] + h_frac * (x_sorted[h_floor + 1] - x_sorted[h_floor])
+      # Ensure proper numerical precision
+      result[i] <- x_sorted[h_floor] * (1 - h_frac) + x_sorted[h_floor + 1] * h_frac
     }
   }
   
-  # Add names if requested
   if (names && !is.null(probs)) {
     names(result) <- paste0(format(100 * probs), "%")
   }
@@ -200,19 +197,15 @@
     stop("Probability p must be between 0 and 1.", call. = FALSE)
   }
   
-  # For very large df, use normal approximation
   if (df > 1000) {
     return(.custom_qnorm(p))
   }
   
-  # Use bisection method to find quantile
-  # We need to find t such that P(T <= t) = p
-  
-  # Set initial bounds (very wide)
-  lower <- -100
-  upper <- 100
-  tolerance <- 1e-6
-  max_iter <- 100
+  # Improved bounds and tolerance
+  lower <- -50
+  upper <- 50
+  tolerance <- 1e-8  # Increased from 1e-6 for better 4-decimal accuracy
+  max_iter <- 200    # Increased from 100
   
   for (iter in 1:max_iter) {
     mid <- (lower + upper) / 2
@@ -229,9 +222,9 @@
     }
   }
   
-  # Return best estimate
   (lower + upper) / 2
 }
+
 
 #' Helper: Incomplete beta function using numerical integration
 #' 
@@ -244,8 +237,9 @@
 #' @keywords internal
 #' @noRd
 .incomplete_beta <- function(x, a, b) {
-  # For our purposes (t-distribution), we use a simple approximation
-  # More sophisticated implementations would use continued fractions
+  # Handle edge cases
+  if (is.na(x) || is.nan(x)) return(NA_real_)
+  if (is.infinite(x)) return(if (x > 0) 1 else 0)
   
   if (x <= 0) return(0)
   if (x >= 1) return(1)
@@ -343,19 +337,22 @@
 #' @keywords internal
 #' @noRd
 .inv_erf <- function(y) {
-  # Newton's method
   if (abs(y) >= 1) {
     return(sign(y) * Inf)
   }
   
-  # Initial guess
-  x <- y * 0.7  # Simple initial estimate
+  x <- y * 0.7
+  tolerance <- 1e-10  # Add tolerance
   
-  for (iter in 1:10) {
+  for (iter in 1:20) {  # Increase from 10 to 20
     f <- .erf(x) - y
     fprime <- 2 / sqrt(pi) * exp(-x^2)
+    
+    if (abs(f) < tolerance) break  # Check convergence
+    
     x <- x - f / fprime
   }
   
   x
 }
+

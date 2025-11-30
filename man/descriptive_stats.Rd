@@ -4,7 +4,7 @@
 \alias{descriptive_stats}
 \title{Descriptive statistics for a numeric sample}
 \usage{
-descriptive_stats(x, digits = 3)
+descriptive_stats(x, digits = 4)
 }
 \arguments{
 \item{x}{A numeric vector of observations.}

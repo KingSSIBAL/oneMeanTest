@@ -1,254 +1,191 @@
-#' @importFrom utils capture.output
-NULL
+#' Report Methods for One-Sample T-Test
+#'
+#' Functions to generate formatted reports of test results
+#' in various formats (text, markdown, LaTeX)
 
-
-#' Report Methods for oneMeanTest Objects
-#' 
-#' Generate formatted reports of t-test results in different output formats.
-#' This provides an alternative to format_ttest_report() with support for
-#' multiple output formats.
-#' 
+#' Generate report from test results
+#'
+#' Creates a formatted report of one-sample t-test results
+#'
 #' @param x Object of class oneMeanTest
-#' @param format Output format: "console", "markdown", or "latex"
-#' @param ... Additional arguments (currently unused)
-#' @return Formatted report as character string
+#' @param format Output format: "text", "markdown", or "latex"
+#' @param file Optional file path to save report
+#' @param ... Additional arguments
+#' @return Character string with formatted report (invisible if file specified)
 #' @export
-#' @examples
-#' \dontrun{
-#' set.seed(123)
-#' x <- rnorm(30, mean = 5, sd = 2)
-#' result <- one_mean_test(x, mu0 = 5)
-#' 
-#' # Console format (default)
-#' cat(report(result, format = "console"))
-#' 
-#' # Markdown format
-#' cat(report(result, format = "markdown"))
-#' 
-#' # LaTeX format
-#' cat(report(result, format = "latex"))
-#' }
-report <- function(x, format = "console", ...) {
+report <- function(x, format = c("text", "markdown", "latex"), file = NULL, ...) {
   UseMethod("report")
 }
 
-#' @rdname report
 #' @export
-report.oneMeanTest <- function(x, format = "console", ...) {
-  # Validate format argument
-  format <- match.arg(format, c("console", "markdown", "latex"))
+report.oneMeanTest <- function(x, format = c("text", "markdown", "latex"), 
+                                file = NULL, ...) {
+  format <- match.arg(format)
   
-  # Dispatch to appropriate helper function
-  switch(format,
-    console = .report_console(x, ...),
-    markdown = .report_markdown(x, ...),
-    latex = .report_latex(x, ...)
-  )
-}
-
-
-#' Console Format Report
-#' 
-#' Internal function to generate console-friendly report.
-#' This is essentially a wrapper around format_ttest_report().
-#' 
-#' @param x oneMeanTest object
-#' @param ... Additional arguments
-#' @return Character string with console report
-#' @keywords internal
-#' @noRd
-.report_console <- function(x, ...) {
-  # Use the existing format_ttest_report function
-  if (exists("format_ttest_report", mode = "function")) {
-    format_ttest_report(x)
-  } else {
-    # Fallback to simple print if format_ttest_report not available
-    paste(capture.output(print(x)), collapse = "\n")
+  # Generate report based on format
+  report_text <- switch(format,
+                        "text" = format_ttest_report(x),
+                        "markdown" = .format_markdown_report(x),
+                        "latex" = .format_latex_report(x))
+  
+  # Save to file if specified
+  if (!is.null(file)) {
+    writeLines(report_text, file)
+    message(sprintf("Report saved to: %s", file))
+    return(invisible(report_text))
   }
+  
+  report_text
 }
 
-
-#' Markdown Format Report
-#' 
-#' Internal function to generate Markdown-formatted report.
-#' Suitable for R Markdown documents and GitHub.
-#' 
+#' Format report as Markdown
+#'
 #' @param x oneMeanTest object
-#' @param ... Additional arguments
-#' @return Character string with Markdown report
+#' @return Markdown-formatted report
 #' @keywords internal
 #' @noRd
-.report_markdown <- function(x, ...) {
+.format_markdown_report <- function(x) {
   lines <- character()
   
-  # Title
+  # Header
   lines <- c(lines, "# One-Sample T-Test Report")
-  lines <- c(lines, "")
-  
-  # Summary info
-  lines <- c(lines, sprintf("**Data:** `%s`", x$data.name))
-  lines <- c(lines, sprintf("**Method:** %s", x$method))
-  lines <- c(lines, "")
-  
-  # Hypotheses
-  lines <- c(lines, "## Hypotheses")
-  lines <- c(lines, "")
-  lines <- c(lines, sprintf("- **H\u2080:** \u03bc = %.4f", x$null.value))
-  
-  alt_symbol <- switch(x$alternative,
-                      "two.sided" = "\u2260",
-                      "greater" = ">",
-                      "less" = "<")
-  lines <- c(lines, sprintf("- **H\u2090:** \u03bc %s %.4f", alt_symbol, x$null.value))
-  lines <- c(lines, sprintf("- **Significance level:** \u03b1 = %.4f", x$alpha))
   lines <- c(lines, "")
   
   # Descriptive Statistics
   lines <- c(lines, "## Descriptive Statistics")
   lines <- c(lines, "")
-  lines <- c(lines, "| Statistic | Value |")
-  lines <- c(lines, "|-----------|-------|")
-  lines <- c(lines, sprintf("| Sample size (n) | %d |", x$sample.stats$n))
-  lines <- c(lines, sprintf("| Sample mean | %.4f |", x$sample.stats$mean))
-  lines <- c(lines, sprintf("| Std. deviation | %.4f |", x$sample.stats$sd))
-  lines <- c(lines, sprintf("| Std. error | %.4f |", x$sample.stats$se))
+  lines <- c(lines, sprintf("- **Sample size (n):** %d", x$sample.stats$n))
+  lines <- c(lines, sprintf("- **Sample mean:** %.4f", x$sample.stats$mean))
+  lines <- c(lines, sprintf("- **Standard deviation:** %.4f", x$sample.stats$sd))
+  lines <- c(lines, sprintf("- **Standard error:** %.4f", x$sample.stats$se))
   lines <- c(lines, "")
   
-  # Test Results
-  lines <- c(lines, "## Test Results")
+  # Hypotheses
+  lines <- c(lines, "## Hypotheses")
   lines <- c(lines, "")
-  lines <- c(lines, "| Statistic | Value |")
-  lines <- c(lines, "|-----------|-------|")
-  lines <- c(lines, sprintf("| t-statistic | %.4f |", x$statistic))
-  lines <- c(lines, sprintf("| df | %d |", x$parameter))
+  lines <- c(lines, sprintf("- **H0:** mu = %.4f", x$null.value))
   
-  if (!is.null(x$t.critical)) {
-    if (x$alternative == "two.sided") {
-      lines <- c(lines, sprintf("| Critical value | \u00b1%.4f |", x$t.critical["upper"]))
-    } else {
-      lines <- c(lines, sprintf("| Critical value | %.4f |", x$t.critical["critical"]))
-    }
-  }
+  alt_text <- switch(x$alternative,
+                     "two.sided" = sprintf("mu != %.4f", x$null.value),
+                     "greater" = sprintf("mu > %.4f", x$null.value),
+                     "less" = sprintf("mu < %.4f", x$null.value))
+  lines <- c(lines, sprintf("- **Ha:** %s", alt_text))
+  lines <- c(lines, sprintf("- **Significance level:** alpha = %.4f", x$alpha))
+  lines <- c(lines, "")
   
-  lines <- c(lines, sprintf("| p-value | %.4f |", x$p.value))
+  # Test Statistics
+  lines <- c(lines, "## Test Statistics")
+  lines <- c(lines, "")
+  lines <- c(lines, sprintf("- **Test statistic (t):** %.4f", x$statistic))
+  lines <- c(lines, sprintf("- **Degrees of freedom:** %d", x$parameter))
+  lines <- c(lines, sprintf("- **P-value:** %.4f", x$p.value))
   lines <- c(lines, "")
   
   # Confidence Interval
   ci <- x$conf.int
   cl <- attr(ci, "conf.level") * 100
-  lines <- c(lines, sprintf("## %.1f%% Confidence Interval", cl))
+  lines <- c(lines, sprintf("## %.0f%% Confidence Interval", cl))
   lines <- c(lines, "")
   lines <- c(lines, sprintf("[%.4f, %.4f]", ci[1], ci[2]))
   lines <- c(lines, "")
   
-  # Decision and Interpretation
+  # Decision
   lines <- c(lines, "## Decision")
   lines <- c(lines, "")
-  lines <- c(lines, sprintf("**%s** at \u03b1 = %.4f", x$decision, x$alpha))
+  lines <- c(lines, sprintf("**%s** at alpha = %.4f", x$decision, x$alpha))
   lines <- c(lines, "")
+  
+  # Interpretation
   lines <- c(lines, "## Interpretation")
   lines <- c(lines, "")
   lines <- c(lines, x$interpretation)
   lines <- c(lines, "")
   
-  # Return combined text
   paste(lines, collapse = "\n")
 }
 
-
-#' LaTeX Format Report
-#' 
-#' Internal function to generate LaTeX-formatted report.
-#' Suitable for academic papers and LaTeX documents.
-#' 
+#' Format report as LaTeX
+#'
 #' @param x oneMeanTest object
-#' @param ... Additional arguments
-#' @return Character string with LaTeX report
+#' @return LaTeX-formatted report
 #' @keywords internal
 #' @noRd
-.report_latex <- function(x, ...) {
+.format_latex_report <- function(x) {
   lines <- character()
   
-  # Document structure (without full preamble)
-  lines <- c(lines, "% One-Sample T-Test Results")
+  lines <- c(lines, "\\section{One-Sample T-Test Report}")
   lines <- c(lines, "")
-  lines <- c(lines, "\\subsection{One-Sample T-Test Report}")
-  lines <- c(lines, "")
-  
-  # Hypotheses
-  lines <- c(lines, "\\textbf{Hypotheses:}")
+  lines <- c(lines, "\\subsection{Descriptive Statistics}")
   lines <- c(lines, "\\begin{itemize}")
-  lines <- c(lines, sprintf("  \\item $H_0: \\mu = %.4f$", x$null.value))
-  
-  alt_symbol <- switch(x$alternative,
-                      "two.sided" = "\\neq",
-                      "greater" = ">",
-                      "less" = "<")
-  lines <- c(lines, sprintf("  \\item $H_a: \\mu %s %.4f$", alt_symbol, x$null.value))
-  lines <- c(lines, sprintf("  \\item Significance level: $\\alpha = %.4f$", x$alpha))
+  lines <- c(lines, sprintf("  \\item Sample size ($n$): %d", x$sample.stats$n))
+  lines <- c(lines, sprintf("  \\item Sample mean ($\\bar{x}$): %.4f", x$sample.stats$mean))
+  lines <- c(lines, sprintf("  \\item Standard deviation ($s$): %.4f", x$sample.stats$sd))
+  lines <- c(lines, sprintf("  \\item Standard error: %.4f", x$sample.stats$se))
   lines <- c(lines, "\\end{itemize}")
   lines <- c(lines, "")
   
-  # Descriptive Statistics Table
-  lines <- c(lines, "\\textbf{Descriptive Statistics:}")
-  lines <- c(lines, "")
-  lines <- c(lines, "\\begin{table}[h]")
-  lines <- c(lines, "\\centering")
-  lines <- c(lines, "\\begin{tabular}{lr}")
-  lines <- c(lines, "\\hline")
-  lines <- c(lines, "Statistic & Value \\\\")
-  lines <- c(lines, "\\hline")
-  lines <- c(lines, sprintf("Sample size ($n$) & %d \\\\", x$sample.stats$n))
-  lines <- c(lines, sprintf("Sample mean ($\\bar{x}$) & %.4f \\\\", x$sample.stats$mean))
-  lines <- c(lines, sprintf("Standard deviation ($s$) & %.4f \\\\", x$sample.stats$sd))
-  lines <- c(lines, sprintf("Standard error & %.4f \\\\", x$sample.stats$se))
-  lines <- c(lines, "\\hline")
-  lines <- c(lines, "\\end{tabular}")
-  lines <- c(lines, "\\end{table}")
+  lines <- c(lines, "\\subsection{Hypotheses}")
+  lines <- c(lines, "\\begin{align*}")
+  lines <- c(lines, sprintf("  H_0:& \\mu = %.4f \\\\", x$null.value))
+  
+  alt_symbol <- switch(x$alternative,
+                       "two.sided" = "\\neq",
+                       "greater" = ">",
+                       "less" = "<")
+  lines <- c(lines, sprintf("  H_a:& \\mu %s %.4f", alt_symbol, x$null.value))
+  lines <- c(lines, "\\end{align*}")
   lines <- c(lines, "")
   
-  # Test Results Table
-  lines <- c(lines, "\\textbf{Test Results:}")
-  lines <- c(lines, "")
-  lines <- c(lines, "\\begin{table}[h]")
-  lines <- c(lines, "\\centering")
-  lines <- c(lines, "\\begin{tabular}{lr}")
-  lines <- c(lines, "\\hline")
-  lines <- c(lines, "Statistic & Value \\\\")
-  lines <- c(lines, "\\hline")
-  lines <- c(lines, sprintf("$t$-statistic & %.4f \\\\", x$statistic))
-  lines <- c(lines, sprintf("Degrees of freedom & %d \\\\", x$parameter))
-  
-  if (!is.null(x$t.critical)) {
-    if (x$alternative == "two.sided") {
-      lines <- c(lines, sprintf("Critical value & $\\pm%.4f$ \\\\", x$t.critical["upper"]))
-    } else {
-      lines <- c(lines, sprintf("Critical value & %.4f \\\\", x$t.critical["critical"]))
-    }
-  }
-  
-  lines <- c(lines, sprintf("$p$-value & %.4f \\\\", x$p.value))
-  lines <- c(lines, "\\hline")
-  lines <- c(lines, "\\end{tabular}")
-  lines <- c(lines, "\\end{table}")
+  lines <- c(lines, "\\subsection{Test Statistics}")
+  lines <- c(lines, "\\begin{itemize}")
+  lines <- c(lines, sprintf("  \\item Test statistic: $t = %.4f$", x$statistic))
+  lines <- c(lines, sprintf("  \\item Degrees of freedom: $df = %d$", x$parameter))
+  lines <- c(lines, sprintf("  \\item $p$-value: %.4f", x$p.value))
+  lines <- c(lines, "\\end{itemize}")
   lines <- c(lines, "")
   
-  # Confidence Interval
   ci <- x$conf.int
   cl <- attr(ci, "conf.level") * 100
-  lines <- c(lines, sprintf("\\textbf{%.0f\\%% Confidence Interval:} $[%.4f, %.4f]$", 
-                           cl, ci[1], ci[2]))
+  lines <- c(lines, sprintf("\\subsection{%.0f\\%% Confidence Interval}", cl))
+  lines <- c(lines, sprintf("$[%.4f, %.4f]$", ci[1], ci[2]))
   lines <- c(lines, "")
   
-  # Decision and Interpretation
-  lines <- c(lines, sprintf("\\textbf{Decision:} %s at $\\alpha = %.4f$", 
-                           x$decision, x$alpha))
-  lines <- c(lines, "")
-  lines <- c(lines, "\\textbf{Interpretation:}")
-  lines <- c(lines, "")
-  lines <- c(lines, x$interpretation)
+  lines <- c(lines, "\\subsection{Decision}")
+  lines <- c(lines, sprintf("\\textbf{%s} at $\\alpha = %.4f$", x$decision, x$alpha))
   lines <- c(lines, "")
   
-  # Return combined text
   paste(lines, collapse = "\n")
+}
+
+#' @export
+summary.oneMeanTest <- function(object, ...) {
+  cat("\nOne-Sample T-Test Summary\n")
+  cat(strrep("=", 50), "\n\n")
+  
+  cat(sprintf("Sample: %s\n", object$data.name))
+  cat(sprintf("n = %d, mean = %.4f, sd = %.4f\n\n",
+              object$sample.stats$n,
+              object$sample.stats$mean,
+              object$sample.stats$sd))
+  
+  cat(sprintf("H0: mu = %.4f\n", object$null.value))
+  cat(sprintf("Ha: mu %s %.4f\n\n",
+              switch(object$alternative,
+                     "two.sided" = "!=",
+                     "greater" = ">",
+                     "less" = "<"),
+              object$null.value))
+  
+  cat(sprintf("t = %.4f, df = %d, p-value = %.4f\n",
+              object$statistic,
+              object$parameter,
+              object$p.value))
+  
+  ci <- object$conf.int
+  cl <- attr(ci, "conf.level")
+  cat(sprintf("%.0f%% CI: [%.4f, %.4f]\n\n", cl * 100, ci[1], ci[2]))
+  
+  cat(sprintf("Decision: %s (alpha = %.4f)\n", object$decision, object$alpha))
+  
+  invisible(object)
 }

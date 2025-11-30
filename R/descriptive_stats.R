@@ -32,7 +32,7 @@
 #' descriptive_stats(x, digits = NULL)
 #'
 #' @export
-descriptive_stats <- function(x, digits = 3) {
+descriptive_stats <- function(x, digits = 4) {  # Changed default from 3 to 4
   .check_numeric_vector(x, "x")
   x <- .remove_na_with_warning(x, "x")
 
@@ -42,9 +42,6 @@ descriptive_stats <- function(x, digits = 3) {
   var_x <- stats::var(x)
   se_x <- sd_x / sqrt(n)
   median_x <- stats::median(x)
-  
-  # BUILT-IN (commented out):
-  # qs <- stats::quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), names = FALSE)
   
   # CUSTOM IMPLEMENTATION:
   qs <- .custom_quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), names = FALSE)
@@ -73,3 +70,4 @@ descriptive_stats <- function(x, digits = 3) {
 
   res
 }
+

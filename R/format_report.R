@@ -35,7 +35,7 @@ format_ttest_report <- function(test_result, include_sections = c("all")) {
   lines <- c(lines, strrep("=", 70))
   lines <- c(lines, "")
   
-  # Descriptive statistics section
+  # Descriptive statistics section - ALL VALUES TO 4 DECIMALS
   lines <- c(lines, "DESCRIPTIVE STATISTICS")
   lines <- c(lines, strrep("-", 70))
   lines <- c(lines, sprintf("Sample size (n):       %d", test_result$sample.stats$n))
@@ -45,7 +45,6 @@ format_ttest_report <- function(test_result, include_sections = c("all")) {
   lines <- c(lines, "")
   
   # Hypotheses section
-  # Using Unicode: \u03bc = μ, \u03b1 = α, \u2260 = ≠
   lines <- c(lines, "HYPOTHESES")
   lines <- c(lines, strrep("-", 70))
   lines <- c(lines, sprintf("H0: \u03bc = %.4f", test_result$null.value))
@@ -65,7 +64,7 @@ format_ttest_report <- function(test_result, include_sections = c("all")) {
   lines <- c(lines, sprintf("Test statistic (t):    %.4f", test_result$statistic))
   lines <- c(lines, sprintf("Degrees of freedom:    %d", test_result$parameter))
   
-  # Critical value - Using Unicode: \u00b1 = ±
+  # Critical value
   if (!is.null(test_result$t.critical)) {
     if (test_result$alternative == "two.sided") {
       lines <- c(lines, sprintf("Critical value:        \u00b1%.4f", test_result$t.critical["upper"]))
@@ -100,7 +99,6 @@ format_ttest_report <- function(test_result, include_sections = c("all")) {
   current_line <- ""
   
   for (word in interp_words) {
-    # Test if adding this word exceeds line width
     if (nchar(current_line) == 0) {
       test_line <- word
     } else {
@@ -108,16 +106,13 @@ format_ttest_report <- function(test_result, include_sections = c("all")) {
     }
     
     if (nchar(test_line) > 70 && nchar(current_line) > 0) {
-      # Current line is full, save it and start new line
       lines <- c(lines, current_line)
       current_line <- word
     } else {
-      # Add word to current line
       current_line <- test_line
     }
   }
   
-  # Add remaining text
   if (nchar(current_line) > 0) {
     lines <- c(lines, current_line)
   }
@@ -190,7 +185,7 @@ format_ttest_report <- function(test_result, include_sections = c("all")) {
                      "greater" = "greater than",
                      "less" = "less than")
   
-  # Build interpretation based on decision
+  # Build interpretation based on decision - ALL VALUES TO 4 DECIMALS
   if (decision == "reject H0") {
     sprintf(
       "At the %.1f%% significance level (alpha = %.4f), there is sufficient statistical evidence to reject the null hypothesis. The sample mean of %.4f is significantly %s the hypothesized value of %.4f (p-value = %.4f).",

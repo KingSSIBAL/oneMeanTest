@@ -2,51 +2,20 @@
 % Please edit documentation in R/plotting.R
 \name{plot.oneMeanTest}
 \alias{plot.oneMeanTest}
-\title{Plot methods for one-sample mean test objects}
+\title{Plot method for oneMeanTest objects}
 \usage{
-\method{plot}{oneMeanTest}(x, which = c("t", "hist", "qq", "box", "ci"), ...)
+\method{plot}{oneMeanTest}(x, type = "distribution", ...)
 }
 \arguments{
-\item{x}{An object of class \code{"oneMeanTest"}.}
+\item{x}{Object of class oneMeanTest}
 
-\item{which}{Character string specifying which plot to draw. One of
-\code{"t"}, \code{"hist"}, \code{"qq"}, \code{"box"}, or \code{"ci"}.}
+\item{type}{Type of plot: "distribution", "ci", "diagnostic", or "all"}
 
-\item{...}{Additional arguments passed on to the underlying graphics
-functions (currently unused).}
+\item{...}{Additional arguments passed to plotting functions}
 }
 \value{
-Invisibly returns \code{x} after producing a plot.
+Invisible NULL (plots are created as side effect)
 }
 \description{
-Plot methods for objects of class \code{"oneMeanTest"} produced by
-\code{\link{one_mean_test}}. Different values of \code{which} produce
-different visualizations:
-}
-\details{
-\itemize{
-\item \code{"t"}: t-distribution with the observed test statistic and
-critical values for the chosen \code{alpha}.
-\item \code{"hist"}: histogram of the data with vertical lines for the
-sample mean and hypothesized mean \code{mu0}.
-\item \code{"qq"}: normal Q-Q plot of the data with a reference line.
-\item \code{"box"}: boxplot of the data with a vertical line at \code{mu0}.
-\item \code{"ci"}: confidence interval plot for the mean.
-}
-
-For \code{"hist"}, \code{"qq"}, and \code{"box"}, the raw data must be
-stored in the object via \code{attr(x, "data") <- your_data}.
-}
-\examples{
-set.seed(123)
-x <- rnorm(30, mean = 5, sd = 2)
-res <- one_mean_test(x, mu0 = 5, check_assumptions = FALSE)
-attr(res, "data") <- x
-
-plot(res, which = "t")
-plot(res, which = "ci")
-plot(res, which = "hist")
-plot(res, which = "qq")
-plot(res, which = "box")
-
+Creates visualizations of one-sample t-test results
 }

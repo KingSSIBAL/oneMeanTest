@@ -27,9 +27,20 @@
   # Standard error of the mean: SE = s / √n
   se <- s / sqrt(n)
   
-  # t-statistic: t = (x̄ - μ₀) / SE
-  # Measures how many standard errors the sample mean is from μ₀
-  t_stat <- (xbar - mu0) / se
+  # Handle zero variance case
+  if (s == 0 || se == 0) {
+    # If variance is zero and mean equals mu0, t = 0
+    # If variance is zero and mean differs from mu0, t = Inf
+    if (abs(xbar - mu0) < .Machine$double.eps) {
+      t_stat <- 0
+    } else {
+      t_stat <- sign(xbar - mu0) * Inf
+    }
+  } else {
+    # t-statistic: t = (x̄ - μ₀) / SE
+    # Measures how many standard errors the sample mean is from μ₀
+    t_stat <- (xbar - mu0) / se
+  }
   
   # Return all computed statistics
   list(
@@ -53,6 +64,18 @@
 #' @noRd
 .t_pvalue_one_mean <- function(t_stat, df, alternative = c("two.sided", "less", "greater")) {
   alternative <- match.arg(alternative)
+  
+  # Handle infinite t-statistic (zero variance case)
+  if (is.infinite(t_stat)) {
+    # Infinite t-statistic means p-value = 0 (reject null)
+    return(0)
+  }
+  
+  # Handle NaN or zero t-statistic
+  if (is.nan(t_stat) || t_stat == 0) {
+    # If t = 0, p-value = 1 (fail to reject)
+    return(1)
+  }
   
   if (alternative == "two.sided") {
     # Two-tailed: P(|T| > |t_obs|) = 2 * P(T > |t_obs|)
@@ -79,6 +102,9 @@
     p <- .custom_pt(t_stat, df = df, lower.tail = TRUE)
   }
   
+  # Clamp to [0, 1] to avoid numerical issues
+  p <- max(0, min(1, p))
+  
   p
 }
 
@@ -102,6 +128,12 @@
   
   # Standard error
   se <- sd / sqrt(n)
+  
+  # Handle zero variance case
+  if (sd == 0 || se == 0) {
+    # If variance is zero, CI collapses to a point
+    return(c(lower = mean, upper = mean))
+  }
   
   # Critical value from t-distribution (two-tailed)
   # BUILT-IN (commented out):

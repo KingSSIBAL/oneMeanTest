@@ -1,218 +1,271 @@
-# Plot methods for oneMeanTest objects
+#' Plotting Functions for One-Sample T-Test
+#'
+#' Functions to create visualizations of test results and diagnostic plots
+#'
+#' @name plotting
+#' @keywords internal
+NULL
 
-#' Plot methods for one-sample mean test objects
+#' Plot method for oneMeanTest objects
 #'
-#' Plot methods for objects of class \code{"oneMeanTest"} produced by
-#' \code{\link{one_mean_test}}. Different values of \code{which} produce
-#' different visualizations:
+#' Creates visualizations of one-sample t-test results
 #'
-#' \itemize{
-#'   \item \code{"t"}: t-distribution with the observed test statistic and
-#'     critical values for the chosen \code{alpha}.
-#'   \item \code{"hist"}: histogram of the data with vertical lines for the
-#'     sample mean and hypothesized mean \code{mu0}.
-#'   \item \code{"qq"}: normal Q-Q plot of the data with a reference line.
-#'   \item \code{"box"}: boxplot of the data with a vertical line at \code{mu0}.
-#'   \item \code{"ci"}: confidence interval plot for the mean.
-#' }
-#'
-#' For \code{"hist"}, \code{"qq"}, and \code{"box"}, the raw data must be
-#' stored in the object via \code{attr(x, "data") <- your_data}.
-#'
-#' @param x An object of class \code{"oneMeanTest"}.
-#' @param which Character string specifying which plot to draw. One of
-#'   \code{"t"}, \code{"hist"}, \code{"qq"}, \code{"box"}, or \code{"ci"}.
-#' @param ... Additional arguments passed on to the underlying graphics
-#'   functions (currently unused).
-#'
-#' @return Invisibly returns \code{x} after producing a plot.
-#'
-#' @examples
-#' set.seed(123)
-#' x <- rnorm(30, mean = 5, sd = 2)
-#' res <- one_mean_test(x, mu0 = 5, check_assumptions = FALSE)
-#' attr(res, "data") <- x
-#'
-#' plot(res, which = "t")
-#' plot(res, which = "ci")
-#' plot(res, which = "hist")
-#' plot(res, which = "qq")
-#' plot(res, which = "box")
-#'
+#' @param x Object of class oneMeanTest
+#' @param type Type of plot: "distribution", "ci", "diagnostic", or "all"
+#' @param ... Additional arguments passed to plotting functions
+#' @return Invisible NULL (plots are created as side effect)
 #' @export
-plot.oneMeanTest <- function(x, which = c("t", "hist", "qq", "box", "ci"), ...) {
-  # Match plot type argument
-  which <- match.arg(which)
-  
-  # Extract key statistics from the test result object
-  ss <- x$sample.stats   # Sample statistics (n, mean, sd, se)
-  n <- ss$n              # Sample size
-  mean_x <- ss$mean      # Sample mean
-  sd_x <- ss$sd          # Sample standard deviation
-  df <- x$parameter      # Degrees of freedom
-  t_stat <- x$statistic  # Observed t-statistic
-  mu0 <- x$null.value    # Hypothesized mean
-  alpha <- x$alpha       # Significance level
-
-  # ============================================================
-  # CHECK FOR RAW DATA (needed for some plots)
-  # ============================================================
-  
-  # Some plots require the original data, not just summary statistics
-  # Check if data is attached as an attribute
-  if (which %in% c("hist", "qq", "box")) {
-    if (is.null(attr(x, "data"))) {
-      stop("Raw data not stored in object; cannot draw this plot. ",
-           "Use attr(result, 'data') <- x to attach the data.", call. = FALSE)
-    }
+plot.oneMeanTest <- function(x, type = "distribution", ...) {
+  if (!inherits(x, "oneMeanTest")) {
+    stop("x must be an oneMeanTest object.", call. = FALSE)
   }
-
-  # ============================================================
-  # PLOT: T-DISTRIBUTION WITH TEST STATISTIC
-  # ============================================================
   
-  if (which == "t") {
-    # Create sequence of t-values for plotting the density curve
-    # Range from -4 to 4 covers most of the distribution
-    curve_x <- seq(-4, 4, length.out = 400)
-    
-    # Plot the t-distribution density curve
-    # This shows the theoretical distribution under H0
-    graphics::plot(
-      curve_x,
-      stats::dt(curve_x, df = df),  # t-density with df degrees of freedom
-      type = "l",                     # Line plot
-      xlab = "t",
-      ylab = "Density",
-      main = "t-distribution with test statistic"
+  type <- match.arg(type, c("distribution", "ci", "diagnostic", "all"))
+  
+  # Extract data from the object
+  data_name <- x$data.name
+  data_values <- eval(parse(text = data_name), envir = parent.frame(2))
+  if (is.null(data_values) || length(data_values) == 0) {
+    # Fallback: try to get from parent environments
+    data_values <- tryCatch(
+      get(data_name, envir = parent.frame(3)),
+      error = function(e) {
+        stop("Cannot retrieve original data. Please provide data directly to plotting functions.", 
+             call. = FALSE)
+      }
     )
-
-    # Add vertical lines for critical values (rejection region boundaries)
-    # For two-sided test: both positive and negative critical values
-    t_crit <- stats::qt(1 - alpha / 2, df = df)
-    graphics::abline(v = c(-t_crit, t_crit), col = "red", lty = 2)
-    
-    # Add vertical line for observed t-statistic
-    # This shows where our sample falls relative to the null distribution
-    graphics::abline(v = t_stat, col = "blue", lwd = 2)
-    
-    # Add legend to identify the lines
-    graphics::legend(
-      "topright",
-      legend = c("t density", "Critical values", "Observed t"),
-      col = c("black", "red", "blue"),
-      lty = c(1, 2, 1),
-      lwd = c(1, 1, 2),
-      bty = "n"
-    )
-
-  # ============================================================
-  # PLOT: HISTOGRAM OF DATA
-  # ============================================================
-    
-  } else if (which == "hist") {
-    # Get raw data from attribute
-    y <- attr(x, "data")
-    
-    # Create histogram with automatic binning (Freedman-Diaconis rule)
-    graphics::hist(
-      y,
-      breaks = "FD",        # Freedman-Diaconis binning rule
-      col = "grey90",       # Light grey bars
-      border = "white",     # White borders between bars
-      xlab = "x",
-      main = "Histogram of data"
-    )
-    
-    # Add vertical line for sample mean (blue)
-    graphics::abline(v = mean(y), col = "blue", lwd = 2)
-    
-    # Add vertical line for hypothesized mean (red, dashed)
-    # This shows how the data center compares to H0
-    graphics::abline(v = mu0, col = "red", lty = 2, lwd = 2)
-    
-    # Add legend
-    graphics::legend(
-      "topright",
-      legend = c("Sample mean", "Hypothesized mean"),
-      col = c("blue", "red"),
-      lty = c(1, 2),
-      lwd = 2,
-      bty = "n"
-    )
-
-  # ============================================================
-  # PLOT: Q-Q PLOT (NORMALITY CHECK)
-  # ============================================================
-    
-  } else if (which == "qq") {
-    # Q-Q plot compares sample quantiles to theoretical normal quantiles
-    # Points should fall on reference line if data are normally distributed
-    y <- attr(x, "data")
-    
-    # Create Q-Q plot
-    stats::qqnorm(y, main = "Normal Q-Q plot")
-    
-    # Add reference line (expected pattern under normality)
-    # Line passes through Q1 and Q3 of both distributions
-    stats::qqline(y, col = "red", lwd = 2)
-
-  # ============================================================
-  # PLOT: BOXPLOT
-  # ============================================================
-    
-  } else if (which == "box") {
-    # Boxplot shows distribution shape and identifies outliers
-    y <- attr(x, "data")
-    
-    # Create horizontal boxplot
-    graphics::boxplot(y, horizontal = TRUE, main = "Boxplot of data")
-    
-    # Add vertical line for hypothesized mean
-    # Shows where H0 falls relative to data distribution
-    graphics::abline(v = mu0, col = "red", lty = 2, lwd = 2)
-
-  # ============================================================
-  # PLOT: CONFIDENCE INTERVAL
-  # ============================================================
-    
-  } else if (which == "ci") {
-    # Visual representation of confidence interval
-    ci <- x$conf.int
-    
-    # Create plot with single point at sample mean
-    # Y-axis limits set to span the confidence interval
-    graphics::plot(
-      1, mean_x,
-      xlim = c(0.5, 1.5),
-      ylim = range(ci),
-      xaxt = "n",              # Suppress x-axis (not meaningful)
-      xlab = "",
-      ylab = "Mean",
-      main = "Confidence interval for the mean"
-    )
-    
-    # Draw error bar representing the confidence interval
-    # Two-headed arrow from lower to upper bound
-    graphics::arrows(
-      x0 = 1, y0 = ci[1L],   # Start at lower bound
-      x1 = 1, y1 = ci[2L],   # End at upper bound
-      angle = 90,            # 90-degree arrow heads
-      code = 3,              # Arrow heads on both ends
-      length = 0.1           # Arrow head size
-    )
-    
-    # Plot sample mean as a point
-    graphics::points(1, mean_x, pch = 19, col = "blue")
-    
-    # Add horizontal line for hypothesized mean
-    # Shows if mu0 falls within the confidence interval
-    graphics::abline(h = mu0, col = "red", lty = 2)
-    
-    # Add simple x-axis label
-    graphics::axis(1, at = 1, labels = "mean")
   }
+  
+  if (type == "all") {
+    oldpar <- graphics::par(mfrow = c(2, 2))
+    on.exit(graphics::par(oldpar))
+    
+    plot_distribution(x, ...)
+    plot_ci(x, ...)
+    plot_qq(data_values, ...)
+    plot_boxplot(data_values, ...)
+    
+  } else if (type == "distribution") {
+    plot_distribution(x, ...)
+  } else if (type == "ci") {
+    plot_ci(x, ...)
+  } else if (type == "diagnostic") {
+    oldpar <- graphics::par(mfrow = c(1, 2))
+    on.exit(graphics::par(oldpar))
+    plot_qq(data_values, ...)
+    plot_boxplot(data_values, ...)
+  }
+  
+  invisible(NULL)
+}
 
-  # Return the input object invisibly (allows chaining)
-  invisible(x)
+
+#' Plot data distribution with test information
+#'
+#' @param x oneMeanTest object or numeric vector
+#' @param ... Additional graphical parameters
+#' @export
+plot_distribution <- function(x, ...) {
+  if (!inherits(x, "oneMeanTest")) {
+    # If raw data, just plot histogram
+    graphics::hist(x, main = "Data Distribution", xlab = "Value", 
+                   col = "lightblue", border = "white", ...)
+    return(invisible(NULL))
+  }
+  
+  # Get data - need to extract from data.name
+  data_name <- x$data.name
+  data_values <- eval(parse(text = data_name), envir = parent.frame(2))
+  
+  # Create histogram
+  graphics::hist(data_values, 
+                 main = sprintf("Distribution of %s", data_name),
+                 xlab = "Value",
+                 col = "lightblue",
+                 border = "white",
+                 prob = TRUE,
+                 ...)
+  
+  # Add density curve
+  graphics::lines(stats::density(data_values, na.rm = TRUE), col = "darkblue", lwd = 2)
+  
+  # Add normal curve overlay
+  xfit <- seq(min(data_values, na.rm = TRUE), 
+              max(data_values, na.rm = TRUE), 
+              length = 100)
+  yfit <- stats::dnorm(xfit, mean = mean(data_values, na.rm = TRUE), 
+                       sd = stats::sd(data_values, na.rm = TRUE))
+  graphics::lines(xfit, yfit, col = "red", lwd = 2, lty = 2)
+  
+  # Add vertical line at sample mean
+  graphics::abline(v = x$estimate, col = "darkgreen", lwd = 2, lty = 1)
+  
+  # Add vertical line at null value
+  graphics::abline(v = x$null.value, col = "red", lwd = 2, lty = 3)
+  
+  # Add legend
+  graphics::legend("topright", 
+                   legend = c("Data density", "Normal curve", "Sample mean", "Null value"),
+                   col = c("darkblue", "red", "darkgreen", "red"),
+                   lty = c(1, 2, 1, 3),
+                   lwd = 2,
+                   cex = 0.8)
+  
+  invisible(NULL)
+}
+
+#' Plot confidence interval
+#'
+#' @param x oneMeanTest object
+#' @param ... Additional graphical parameters
+#' @export
+plot_ci <- function(x, ...) {
+  if (!inherits(x, "oneMeanTest")) {
+    stop("x must be an oneMeanTest object.", call. = FALSE)
+  }
+  
+  ci <- x$conf.int
+  estimate <- x$estimate
+  mu0 <- x$null.value
+  conf_level <- attr(ci, "conf.level")
+  
+  # Set up plot
+  graphics::plot(1, estimate, 
+                 xlim = c(0.5, 1.5),
+                 ylim = range(c(ci, estimate, mu0)),
+                 xlab = "",
+                 ylab = "Value",
+                 main = sprintf("%.0f%% Confidence Interval", conf_level * 100),
+                 xaxt = "n",
+                 pch = 19,
+                 col = "darkblue",
+                 cex = 1.5,
+                 ...)
+  
+  # Draw CI
+  graphics::arrows(1, ci[1], 1, ci[2], 
+                   angle = 90, code = 3, length = 0.1, lwd = 2, col = "darkblue")
+  
+  # Add null value line
+  graphics::abline(h = mu0, col = "red", lty = 2, lwd = 2)
+  
+  # Add labels
+  graphics::text(1, ci[1], sprintf("%.4f", ci[1]), pos = 2, cex = 0.8)
+  graphics::text(1, ci[2], sprintf("%.4f", ci[2]), pos = 2, cex = 0.8)
+  graphics::text(1, estimate, sprintf("Mean: %.4f", estimate), pos = 4, cex = 0.8)
+  graphics::text(1, mu0, sprintf("H0: %.4f", mu0), pos = 4, cex = 0.8, col = "red")
+  
+  # Decision
+  decision_text <- if (x$decision == "reject H0") {
+    "Reject H0"
+  } else {
+    "Fail to reject H0"
+  }
+  graphics::mtext(decision_text, side = 3, line = 0.5, cex = 0.9)
+  
+  invisible(NULL)
+}
+
+#' Q-Q plot for normality assessment
+#'
+#' @param x Numeric vector
+#' @param ... Additional graphical parameters
+#' @export
+plot_qq <- function(x, ...) {
+  x <- x[!is.na(x)]
+  
+  stats::qqnorm(x, main = "Normal Q-Q Plot", 
+                pch = 19, col = "darkblue", ...)
+  stats::qqline(x, col = "red", lwd = 2, lty = 2)
+  
+  invisible(NULL)
+}
+
+#' Histogram with normal curve
+#'
+#' @param x Numeric vector
+#' @param ... Additional graphical parameters
+#' @export
+plot_histogram <- function(x, ...) {
+  x <- x[!is.na(x)]
+  
+  graphics::hist(x, 
+                 main = "Histogram with Normal Curve",
+                 xlab = "Value",
+                 col = "lightblue",
+                 border = "white",
+                 prob = TRUE,
+                 ...)
+  
+  # Add normal curve
+  xfit <- seq(min(x), max(x), length = 100)
+  yfit <- stats::dnorm(xfit, mean = mean(x), sd = stats::sd(x))
+  graphics::lines(xfit, yfit, col = "red", lwd = 2)
+  
+  invisible(NULL)
+}
+
+#' Boxplot with outlier identification
+#'
+#' @param x Numeric vector
+#' @param ... Additional graphical parameters
+#' @export
+plot_boxplot <- function(x, ...) {
+  x <- x[!is.na(x)]
+  
+  graphics::boxplot(x, 
+                    main = "Boxplot",
+                    ylab = "Value",
+                    col = "lightblue",
+                    border = "darkblue",
+                    ...)
+  
+  # Add points for outliers
+  bp <- graphics::boxplot(x, plot = FALSE)
+  if (length(bp$out) > 0) {
+    graphics::points(rep(1, length(bp$out)), bp$out, col = "red", pch = 19, cex = 1.2)
+  }
+  
+  invisible(NULL)
+}
+
+#' Plot bootstrap distribution
+#'
+#' @param x oneMeanTest_bootstrap object
+#' @param ... Additional graphical parameters
+#' @export
+plot.oneMeanTest_bootstrap <- function(x, ...) {
+  if (!inherits(x, "oneMeanTest_bootstrap")) {
+    stop("x must be an oneMeanTest_bootstrap object.", call. = FALSE)
+  }
+  
+  oldpar <- graphics::par(mfrow = c(1, 2))
+  on.exit(graphics::par(oldpar))
+  
+  # Plot bootstrap t-distribution
+  graphics::hist(x$t.boot,
+                 main = "Bootstrap t-distribution",
+                 xlab = "t-statistic",
+                 col = "lightblue",
+                 border = "white",
+                 prob = TRUE)
+  graphics::abline(v = x$t.obs, col = "red", lwd = 2, lty = 2)
+  graphics::legend("topright", "Observed t", col = "red", lty = 2, lwd = 2)
+  
+  # Plot bootstrap mean distribution
+  graphics::hist(x$mean.boot,
+                 main = "Bootstrap mean distribution",
+                 xlab = "Sample mean",
+                 col = "lightgreen",
+                 border = "white",
+                 prob = TRUE)
+  graphics::abline(v = x$mean.obs, col = "red", lwd = 2, lty = 2)
+  graphics::abline(v = x$conf.int, col = "blue", lwd = 2, lty = 3)
+  graphics::legend("topright", 
+                   c("Observed mean", "95% CI"),
+                   col = c("red", "blue"),
+                   lty = c(2, 3),
+                   lwd = 2)
+  
+  invisible(NULL)
 }
