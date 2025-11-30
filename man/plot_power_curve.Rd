@@ -27,5 +27,5 @@ plot_power_curve(
 Invisible data frame with n and power values
 }
 \description{
-Creates a plot showing how power changes with sample size
+Creates a plot showing how power changes with sample size.
 }

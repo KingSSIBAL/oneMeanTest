@@ -27,7 +27,7 @@ sample_size_t_test(
 Required sample size (integer)
 }
 \description{
-Determines the sample size needed to achieve specified power
+Determines the sample size needed to achieve specified power.
 }
 \examples{
 # Sample size needed for 80\% power to detect effect of 0.5 SD

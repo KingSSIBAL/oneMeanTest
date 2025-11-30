@@ -27,9 +27,9 @@ effect_size_t_test(
 Detectable effect size (in original units)
 }
 \description{
-Determines the effect size that can be detected with specified power
+Determines the effect size that can be detected with specified power.
 }
 \examples{
-# Effect size detectable with 80\% power and n=30
+# Effect size detectable with 80\% power and n = 30
 effect_size_t_test(n = 30, power = 0.80, sd = 1)
 }

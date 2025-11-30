@@ -28,10 +28,10 @@ Numeric power value (0 to 1)
 }
 \description{
 Functions to calculate statistical power, required sample size,
-and detectable effect sizes for one-sample t-tests
+and detectable effect sizes for one-sample t-tests.
 }
 \examples{
-# Power to detect effect of 0.5 SD with n=30
+# Power to detect effect of 0.5 SD with n = 30
 power_t_test(n = 30, delta = 0.5, sd = 1, alpha = 0.05)
 }
 \keyword{Calculate}
@@ -41,7 +41,7 @@ power_t_test(n = 30, delta = 0.5, sd = 1, alpha = 0.05)
 \keyword{effect}
 \keyword{for}
 \keyword{given}
-\keyword{level}
+\keyword{level.}
 \keyword{one-sample}
 \keyword{power}
 \keyword{sample}

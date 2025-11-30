@@ -4,10 +4,12 @@
 \alias{plot_distribution}
 \title{Plot data distribution with test information}
 \usage{
-plot_distribution(x, ...)
+plot_distribution(x, test_obj = NULL, ...)
 }
 \arguments{
 \item{x}{oneMeanTest object or numeric vector}
+
+\item{test_obj}{oneMeanTest object (optional, when x is numeric data)}
 
 \item{...}{Additional graphical parameters}
 }

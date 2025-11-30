@@ -40,13 +40,13 @@ plot.oneMeanTest <- function(x, type = "distribution", ...) {
     oldpar <- graphics::par(mfrow = c(2, 2))
     on.exit(graphics::par(oldpar))
     
-    plot_distribution(x, ...)
+    plot_distribution(data_values, test_obj = x, ...)
     plot_ci(x, ...)
     plot_qq(data_values, ...)
     plot_boxplot(data_values, ...)
     
   } else if (type == "distribution") {
-    plot_distribution(x, ...)
+    plot_distribution(data_values, test_obj = x, ...)
   } else if (type == "ci") {
     plot_ci(x, ...)
   } else if (type == "diagnostic") {
@@ -63,23 +63,36 @@ plot.oneMeanTest <- function(x, type = "distribution", ...) {
 #' Plot data distribution with test information
 #'
 #' @param x oneMeanTest object or numeric vector
+#' @param test_obj oneMeanTest object (optional, when x is numeric data)
 #' @param ... Additional graphical parameters
 #' @export
-plot_distribution <- function(x, ...) {
-  if (!inherits(x, "oneMeanTest")) {
-    # If raw data, just plot histogram
-    graphics::hist(x, main = "Data Distribution", xlab = "Value", 
-                   col = "lightblue", border = "white", ...)
-    return(invisible(NULL))
+plot_distribution <- function(x, test_obj = NULL, ...) {
+  # Handle both: plot_distribution(data) and plot_distribution(data, test_obj)
+  # For backward compatibility with plot_distribution(oneMeanTest_obj)
+  if (inherits(x, "oneMeanTest") && is.null(test_obj)) {
+    test_obj <- x
+    # Extract data from the object
+    data_name <- test_obj$data.name
+    data_values <- tryCatch(
+      eval(parse(text = data_name), envir = parent.frame(2)),
+      error = function(e) {
+        tryCatch(
+          get(data_name, envir = parent.frame(3)),
+          error = function(e2) {
+            stop("Cannot retrieve original data.", call. = FALSE)
+          }
+        )
+      }
+    )
+  } else if (is.numeric(x)) {
+    data_values <- x[!is.na(x)]
+  } else {
+    stop("x must be numeric or oneMeanTest object.", call. = FALSE)
   }
-  
-  # Get data - need to extract from data.name
-  data_name <- x$data.name
-  data_values <- eval(parse(text = data_name), envir = parent.frame(2))
   
   # Create histogram
   graphics::hist(data_values, 
-                 main = sprintf("Distribution of %s", data_name),
+                 main = sprintf("Distribution of Sample Data (n = %d)", length(data_values)),
                  xlab = "Value",
                  col = "lightblue",
                  border = "white",
@@ -97,19 +110,27 @@ plot_distribution <- function(x, ...) {
                        sd = stats::sd(data_values, na.rm = TRUE))
   graphics::lines(xfit, yfit, col = "red", lwd = 2, lty = 2)
   
-  # Add vertical line at sample mean
-  graphics::abline(v = x$estimate, col = "darkgreen", lwd = 2, lty = 1)
-  
-  # Add vertical line at null value
-  graphics::abline(v = x$null.value, col = "red", lwd = 2, lty = 3)
-  
-  # Add legend
-  graphics::legend("topright", 
-                   legend = c("Data density", "Normal curve", "Sample mean", "Null value"),
-                   col = c("darkblue", "red", "darkgreen", "red"),
-                   lty = c(1, 2, 1, 3),
-                   lwd = 2,
-                   cex = 0.8)
+  # Add vertical lines and legend if test object provided
+  if (!is.null(test_obj)) {
+    graphics::abline(v = test_obj$estimate, col = "darkgreen", lwd = 2, lty = 1)
+    graphics::abline(v = test_obj$null.value, col = "red", lwd = 2, lty = 3)
+    
+    # Add legend
+    graphics::legend("topright", 
+                     legend = c("Data density", "Normal curve", "Sample mean", "Null value"),
+                     col = c("darkblue", "red", "darkgreen", "red"),
+                     lty = c(1, 2, 1, 3),
+                     lwd = 2,
+                     cex = 0.8)
+  } else {
+    # Simple legend without test lines
+    graphics::legend("topright", 
+                     legend = c("Data density", "Normal curve"),
+                     col = c("darkblue", "red"),
+                     lty = c(1, 2),
+                     lwd = 2,
+                     cex = 0.8)
+  }
   
   invisible(NULL)
 }
@@ -190,7 +211,7 @@ plot_histogram <- function(x, ...) {
   x <- x[!is.na(x)]
   
   graphics::hist(x, 
-                 main = "Histogram with Normal Curve",
+                 main = sprintf("Histogram with Normal Curve (n = %d)", length(x)),
                  xlab = "Value",
                  col = "lightblue",
                  border = "white",
@@ -214,7 +235,7 @@ plot_boxplot <- function(x, ...) {
   x <- x[!is.na(x)]
   
   graphics::boxplot(x, 
-                    main = "Boxplot",
+                    main = sprintf("Boxplot (n = %d)", length(x)),
                     ylab = "Value",
                     col = "lightblue",
                     border = "darkblue",
@@ -244,7 +265,7 @@ plot.oneMeanTest_bootstrap <- function(x, ...) {
   
   # Plot bootstrap t-distribution
   graphics::hist(x$t.boot,
-                 main = "Bootstrap t-distribution",
+                 main = sprintf("Bootstrap t-distribution (B = %d)", length(x$t.boot)),
                  xlab = "t-statistic",
                  col = "lightblue",
                  border = "white",
@@ -254,7 +275,7 @@ plot.oneMeanTest_bootstrap <- function(x, ...) {
   
   # Plot bootstrap mean distribution
   graphics::hist(x$mean.boot,
-                 main = "Bootstrap mean distribution",
+                 main = sprintf("Bootstrap Mean Distribution (B = %d)", length(x$mean.boot)),
                  xlab = "Sample mean",
                  col = "lightgreen",
                  border = "white",
