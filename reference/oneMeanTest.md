@@ -7,4 +7,4 @@ utilities for educational use.
 
 ## Author
 
-**Maintainer**: Your Name <your.email@example.com>
+**Maintainer**: Reijel Agub <rcagub@up.edu.ph>
