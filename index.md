@@ -697,8 +697,6 @@ Academic publication
 
 **Current Version**: 0.1.0 (Experimental)  
 **Status**: Active Development  
-**Submission Deadline**: December 2, 2025  
-**Presentation Date**: December 3, 2025  
 **Last Updated**: November 30, 2025
 
 ### Implementation Summary
