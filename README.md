@@ -2,10 +2,11 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/KingSSIBAL/oneMeanTest/branch/main/graph/badge.svg)](https://codecov.io/gh/KingSSIBAL/oneMeanTest?branch=main)
-[![CRAN status](https://www.r-pkg.org/badges/version/oneMeanTest)](https://CRAN.R-project.org/package=oneMeanTest)
+[![Test Coverage](https://codecov.io/gh/KingSSIBAL/oneMeanTest/graph/badge.svg?token=YOUR_TOKEN_HERE)](https://codecov.io/gh/KingSSIBAL/oneMeanTest)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
+
 
 > **A comprehensive R package for one-sample t-tests with custom implementations, bootstrap inference, power analysis, and rich visualizations.**
 
@@ -317,10 +318,11 @@ This package maintains high quality standards:
 
 | Metric | Status |
 |--------|--------|
-| **Tests** | 360+ tests passing |
-| **Coverage** | 85%+ code coverage |
+| **R CMD Check** | [![R-CMD-check](https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml) |
+| **Test Coverage** | [![codecov](https://codecov.io/gh/KingSSIBAL/oneMeanTest/graph/badge.svg)](https://codecov.io/gh/KingSSIBAL/oneMeanTest) |
+| **Tests** | 530+ tests passing |
+| **Coverage** | 94.83% code coverage |
 | **Accuracy** | 4-decimal validation vs base R |
-| **R CMD check** | 0 errors, 0 warnings |
 | **Documentation** | 100% functions documented |
 
 Run tests locally:
