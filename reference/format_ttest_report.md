@@ -58,7 +58,7 @@ cat(report)
 #> Test statistic (t):    -0.2630
 #> Degrees of freedom:    29
 #> Critical value:        ±2.0452
-#> P-value:               0.7944
+#> P-value:               0.7952
 #> 
 #> CONFIDENCE INTERVAL (95.0%)
 #> ----------------------------------------------------------------------
@@ -72,7 +72,7 @@ cat(report)
 #> ----------------------------------------------------------------------
 #> At alpha = 0.050, we fail to reject the null hypothesis that the
 #> population mean equals 5.000. The sample mean (4.906) is different
-#> from 5.000 (t = -0.263, df = 29, p-value = 0.7944).
+#> from 5.000 (t = -0.263, df = 29, p-value = 0.7952).
 #> 
 #> ASSUMPTION CHECKS
 #> ----------------------------------------------------------------------

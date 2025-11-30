@@ -120,8 +120,8 @@ boot_res
 #>     alternative = "two.sided", seed = 123)
 #> 
 #> Observed t-statistic: -0.2630
-#> Bootstrap p-value  : 0.82
+#> Bootstrap p-value  : 0.826
 #> 95.0000% bootstrap CI for the mean:
-#>   [4.1919, 5.5519]
+#>   [4.1933, 5.5355]
 #> Number of resamples: 500
 ```

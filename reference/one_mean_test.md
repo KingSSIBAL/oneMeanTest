@@ -80,6 +80,10 @@ An object of class `"oneMeanTest"` containing:
 
   Character string with the alternative hypothesis.
 
+- t.critical:
+
+  Named vector with critical value(s) for the test.
+
 - method:
 
   Description of the method used.
@@ -131,7 +135,7 @@ res
 #> Test results:
 #>   t     = -0.2630
 #>   df    = 29
-#>   p-val = 0.7944
+#>   p-val = 0.7952
 #>   t-crit = ±2.0452
 #>   alpha = 0.0500
 #> 
@@ -140,7 +144,7 @@ res
 #> 
 #> Decision: fail to reject H0 
 #> Interpretation:
-#>   At alpha = 0.050, we fail to reject the null hypothesis that the population mean equals 5.000. The sample mean (4.906) is different from 5.000 (t = -0.263, df = 29, p-value = 0.7944). 
+#>   At alpha = 0.050, we fail to reject the null hypothesis that the population mean equals 5.000. The sample mean (4.906) is different from 5.000 (t = -0.263, df = 29, p-value = 0.7952). 
 
 # One-sided alternative and different confidence level
 res_less <- one_mean_test(x, mu0 = 5, alternative = "less",
@@ -160,7 +164,7 @@ res_less
 #> Test results:
 #>   t     = -0.2630
 #>   df    = 29
-#>   p-val = 0.3972
+#>   p-val = 0.3976
 #>   t-crit = -2.4620
 #>   alpha = 0.0100
 #> 
@@ -169,5 +173,5 @@ res_less
 #> 
 #> Decision: fail to reject H0 
 #> Interpretation:
-#>   At alpha = 0.010, we fail to reject the null hypothesis that the population mean equals 5.000. The sample mean (4.906) is less than 5.000 (t = -0.263, df = 29, p-value = 0.3972). 
+#>   At alpha = 0.010, we fail to reject the null hypothesis that the population mean equals 5.000. The sample mean (4.906) is less than 5.000 (t = -0.263, df = 29, p-value = 0.3976). 
 ```
