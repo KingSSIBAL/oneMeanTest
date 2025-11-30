@@ -1,6 +1,6 @@
 # Plot power curve
 
-Creates a plot showing how power changes with sample size
+Creates a plot showing how power changes with sample size.
 
 ## Usage
 

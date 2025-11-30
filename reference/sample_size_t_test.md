@@ -1,6 +1,6 @@
 # Calculate required sample size for desired power
 
-Determines the sample size needed to achieve specified power
+Determines the sample size needed to achieve specified power.
 
 ## Usage
 

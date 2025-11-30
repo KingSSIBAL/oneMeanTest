@@ -1,7 +1,7 @@
 # Power Analysis Functions for One-Sample T-Test
 
 Functions to calculate statistical power, required sample size, and
-detectable effect sizes for one-sample t-tests
+detectable effect sizes for one-sample t-tests.
 
 ## Usage
 
@@ -44,7 +44,7 @@ Numeric power value (0 to 1)
 ## Examples
 
 ``` r
-# Power to detect effect of 0.5 SD with n=30
+# Power to detect effect of 0.5 SD with n = 30
 power_t_test(n = 30, delta = 0.5, sd = 1, alpha = 0.05)
 #> [1] 0.7539647
 ```

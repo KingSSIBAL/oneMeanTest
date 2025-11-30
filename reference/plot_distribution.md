@@ -5,7 +5,7 @@ Plot data distribution with test information
 ## Usage
 
 ``` r
-plot_distribution(x, ...)
+plot_distribution(x, test_obj = NULL, ...)
 ```
 
 ## Arguments
@@ -13,6 +13,10 @@ plot_distribution(x, ...)
 - x:
 
   oneMeanTest object or numeric vector
+
+- test_obj:
+
+  oneMeanTest object (optional, when x is numeric data)
 
 - ...:
 

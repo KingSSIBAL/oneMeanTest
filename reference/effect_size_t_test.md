@@ -1,6 +1,6 @@
 # Calculate detectable effect size for given power
 
-Determines the effect size that can be detected with specified power
+Determines the effect size that can be detected with specified power.
 
 ## Usage
 
@@ -43,7 +43,7 @@ Detectable effect size (in original units)
 ## Examples
 
 ``` r
-# Effect size detectable with 80% power and n=30
+# Effect size detectable with 80% power and n = 30
 effect_size_t_test(n = 30, power = 0.80, sd = 1)
 #> [1] 0.5270605
 ```
