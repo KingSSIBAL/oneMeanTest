@@ -58,7 +58,7 @@
 <blockquote>
 <p><strong>A comprehensive R package for one-sample t-tests with custom implementations, bootstrap inference, power analysis, and rich visualizations.</strong></p>
 </blockquote>
-<p>Developed for STAT 181 (Statistical Computing) at the Institute of Statistics, UP Los Banos.</p>
+<p>Developed for <strong>STAT 181 (Statistical Computing)</strong> at the <strong>Institute of Statistics, University of the Philippines Los Baños</strong>.</p>
 <hr>
 <div class="section level2">
 <h2 id="id_-features">✨ Features<a class="anchor" aria-label="anchor" href="#id_-features"></a>
@@ -69,18 +69,23 @@
 <ul>
 <li>✅ <strong>One-sample t-test</strong> with complete statistical inference</li>
 <li>✅ <strong>Custom implementations</strong> of statistical functions (no reliance on built-in t-test)</li>
-<li>✅ <strong>Bootstrap inference</strong> for robust non-parametric alternatives</li>
+<li>✅ <strong>Bootstrap inference</strong> for robust non-parametric alternatives<br>
+</li>
 <li>✅ <strong>Power analysis</strong> for sample size and effect size calculations</li>
 <li>✅ <strong>Assumption checking</strong> with Shapiro-Wilk test and outlier detection</li>
-<li>✅ <strong>Rich visualizations</strong> including distributions, Q-Q plots, and confidence intervals</li>
+<li>✅ <strong>Rich visualizations</strong> (base graphics + ggplot2)</li>
 <li>✅ <strong>Multiple output formats</strong> (console, markdown, LaTeX reports)</li>
+<li>✅ <strong>Effect sizes</strong> with Cohen’s d, Hedges’ g, and Glass’s delta</li>
+<li>✅ <strong>Non-parametric tests</strong> including Wilcoxon signed-rank and sign test</li>
+<li>✅ <strong>Multiple testing corrections</strong> (Bonferroni, Holm, FDR)</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="quality-assurance">Quality Assurance<a class="anchor" aria-label="anchor" href="#quality-assurance"></a>
 </h3>
 <ul>
-<li>🎯 <strong>360+ comprehensive tests</strong> with 85%+ code coverage</li>
+<li>🎯 <strong>530+ comprehensive tests</strong> with <strong>94.83% code coverage</strong>
+</li>
 <li>📊 <strong>4-decimal accuracy</strong> validated against R’s built-in functions</li>
 <li>🔬 <strong>Production-ready</strong> with full documentation and vignettes</li>
 <li>🚀 <strong>Zero dependencies</strong> beyond base R packages (stats, graphics)</li>
@@ -246,9 +251,77 @@ different from 100.</code></pre>
 <span><span class="fu"><a href="reference/plot_power_curve.html">plot_power_curve</a></span><span class="op">(</span>delta <span class="op">=</span> <span class="fl">5</span>, sd <span class="op">=</span> <span class="fl">15</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="assumption-checking">Assumption Checking<a class="anchor" aria-label="anchor" href="#assumption-checking"></a>
+<h3 id="effect-sizes--implemented">Effect Sizes (✨ IMPLEMENTED!)<a class="anchor" aria-label="anchor" href="#effect-sizes--implemented"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Cohen's d with confidence interval</span></span>
+<span><span class="fu"><a href="reference/cohens_d_ci.html">cohens_d_ci</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span>, conf.level <span class="op">=</span> <span class="fl">0.95</span>, method <span class="op">=</span> <span class="st">"bootstrap"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Hedges' g (bias-corrected for small samples)</span></span>
+<span><span class="fu"><a href="reference/hedges_g.html">hedges_g</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Glass's delta (with population SD)</span></span>
+<span><span class="fu"><a href="reference/glass_delta.html">glass_delta</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span>, sigma <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Comprehensive effect size summary</span></span>
+<span><span class="fu"><a href="reference/effect_size_summary.html">effect_size_summary</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Effect Size Summary
+======================================================================
+
+Sample size: n = 30
+Null value: mu0 = 100.0000
+Confidence level: 95%
+
+       Measure  Estimate  CI_Lower  CI_Upper  Interpretation
+     Cohen's d    0.1089   -0.2516    0.4694     negligible
+     Hedges' g    0.1070   -0.2473    0.4613     negligible</code></pre>
+</div>
+<div class="section level3">
+<h3 id="non-parametric-tests--implemented">Non-Parametric Tests (✨ IMPLEMENTED!)<a class="anchor" aria-label="anchor" href="#non-parametric-tests--implemented"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Wilcoxon signed-rank test</span></span>
+<span><span class="fu"><a href="reference/wilcoxon_test.html">wilcoxon_test</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Sign test (simpler alternative)</span></span>
+<span><span class="fu"><a href="reference/sign_test.html">sign_test</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compare all three tests side-by-side</span></span>
+<span><span class="fu"><a href="reference/compare_tests.html">compare_tests</a></span><span class="op">(</span><span class="va">x</span>, mu0 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>                 Test  Statistic  P_value           Decision
+   One-sample t-test  t = 0.5954   0.5565  fail to reject H0
+ Wilcoxon signed-rank     V = 255   0.5712  fail to reject H0
+            Sign test       S = 16   0.8555  fail to reject H0</code></pre>
+</div>
+<div class="section level3">
+<h3 id="multiple-testing-corrections--implemented">Multiple Testing Corrections (✨ IMPLEMENTED!)<a class="anchor" aria-label="anchor" href="#multiple-testing-corrections--implemented"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run multiple tests</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  test1 <span class="op">=</span> <span class="fu"><a href="reference/one_mean_test.html">one_mean_test</a></span><span class="op">(</span><span class="va">sample1</span>, mu0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  test2 <span class="op">=</span> <span class="fu"><a href="reference/one_mean_test.html">one_mean_test</a></span><span class="op">(</span><span class="va">sample2</span>, mu0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  test3 <span class="op">=</span> <span class="fu"><a href="reference/one_mean_test.html">one_mean_test</a></span><span class="op">(</span><span class="va">sample3</span>, mu0 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Apply corrections</span></span>
+<span><span class="va">p_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">results</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">p.value</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Bonferroni correction</span></span>
+<span><span class="fu">bonferroni_adjust</span><span class="op">(</span><span class="va">p_values</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Holm's sequential procedure</span></span>
+<span><span class="fu">holm_adjust</span><span class="op">(</span><span class="va">p_values</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Benjamini-Hochberg FDR control</span></span>
+<span><span class="fu">fdr_adjust</span><span class="op">(</span><span class="va">p_values</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="assumption-checking">Assumption Checking<a class="anchor" aria-label="anchor" href="#assumption-checking"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check assumptions</span></span>
 <span><span class="va">assumptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/check_assumptions.html">check_assumptions</a></span><span class="op">(</span><span class="va">x</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -262,7 +335,10 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="visualizations">Visualizations<a class="anchor" aria-label="anchor" href="#visualizations"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="base-graphics">Base Graphics<a class="anchor" aria-label="anchor" href="#base-graphics"></a>
+</h4>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Distribution plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">result</span>, type <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span>
 <span></span>
@@ -279,7 +355,18 @@ different from 100.</code></pre>
 <span><span class="fu"><a href="reference/plot_qq.html">plot_qq</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>        <span class="co"># Q-Q plot for normality</span></span>
 <span><span class="fu"><a href="reference/plot_histogram.html">plot_histogram</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># Histogram with normal curve</span></span>
 <span><span class="fu"><a href="reference/plot_boxplot.html">plot_boxplot</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>   <span class="co"># Boxplot with outliers highlighted</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="ggplot2-visualizations--implemented">ggplot2 Visualizations (✨ IMPLEMENTED!)<a class="anchor" aria-label="anchor" href="#ggplot2-visualizations--implemented"></a>
+</h4>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Modern ggplot2 versions</span></span>
+<span><span class="fu"><a href="reference/ggplot_distribution.html">ggplot_distribution</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ggplot_qq.html">ggplot_qq</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ggplot_ci.html">ggplot_ci</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="fu">ggplot_comparison</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">result1</span>, <span class="va">result2</span>, <span class="va">result3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <hr>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -288,7 +375,7 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="console-report">Console Report<a class="anchor" aria-label="anchor" href="#console-report"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Generate formatted report</span></span>
 <span><span class="va">report</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/format_ttest_report.html">format_ttest_report</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">report</span><span class="op">)</span></span></code></pre></div>
@@ -296,7 +383,7 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="save-to-file">Save to File<a class="anchor" aria-label="anchor" href="#save-to-file"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save as text file</span></span>
 <span><span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">result</span>, file <span class="op">=</span> <span class="st">"ttest_report.txt"</span><span class="op">)</span></span>
 <span></span>
@@ -314,7 +401,7 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="interpretation-helpers">Interpretation Helpers<a class="anchor" aria-label="anchor" href="#interpretation-helpers"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Interpret p-value strength</span></span>
 <span><span class="fu"><a href="reference/interpret_p_value.html">interpret_p_value</a></span><span class="op">(</span><span class="fl">0.03</span><span class="op">)</span></span>
 <span><span class="co"># "moderate evidence against the null hypothesis"</span></span>
@@ -341,7 +428,7 @@ different from 100.</code></pre>
 <li>
 <code>.incomplete_beta()</code> - Beta function for t-distribution</li>
 </ul>
-<p>These match R’s built-in functions to <strong>4 decimal places</strong> (validated by 360+ tests).</p>
+<p>These match R’s built-in functions to <strong>4 decimal places</strong> (validated by 530+ tests).</p>
 <hr>
 </div>
 </div>
@@ -354,6 +441,8 @@ different from 100.</code></pre>
 ✅ You need assumption checking and diagnostic plots<br>
 ✅ You want bootstrap alternatives for robustness<br>
 ✅ You need power analysis for study design<br>
+✅ You want effect sizes with interpretations<br>
+✅ You need non-parametric alternatives<br>
 ✅ You want comprehensive, publication-ready reports<br>
 ✅ You’re learning statistical computing concepts</p>
 <p><strong>Alternative approaches:</strong></p>
@@ -361,7 +450,7 @@ different from 100.</code></pre>
 <li>
 <strong>Large samples (n &gt; 30)</strong>: Central Limit Theorem applies, normality less critical</li>
 <li>
-<strong>Non-normal data</strong>: Use <code><a href="reference/bootstrap_ttest.html">bootstrap_ttest()</a></code> for non-parametric inference</li>
+<strong>Non-normal data</strong>: Use <code><a href="reference/bootstrap_ttest.html">bootstrap_ttest()</a></code> or <code><a href="reference/wilcoxon_test.html">wilcoxon_test()</a></code> for non-parametric inference</li>
 <li>
 <strong>Paired data</strong>: Use paired t-test (not in this package)</li>
 <li>
@@ -375,7 +464,7 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View available vignettes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"oneMeanTest"</span><span class="op">)</span></span>
 <span></span>
@@ -387,20 +476,29 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="function-help">Function Help<a class="anchor" aria-label="anchor" href="#function-help"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Main function help</span></span>
 <span><span class="op">?</span><span class="va">one_mean_test</span></span>
 <span></span>
-<span><span class="co"># Other functions</span></span>
+<span><span class="co"># Other key functions</span></span>
 <span><span class="op">?</span><span class="va">descriptive_stats</span></span>
 <span><span class="op">?</span><span class="va">bootstrap_ttest</span></span>
 <span><span class="op">?</span><span class="va">check_assumptions</span></span>
-<span><span class="op">?</span><span class="va">power_t_test</span></span></code></pre></div>
+<span><span class="op">?</span><span class="va">power_t_test</span></span>
+<span><span class="op">?</span><span class="va">cohens_d_ci</span></span>
+<span><span class="op">?</span><span class="va">wilcoxon_test</span></span>
+<span><span class="op">?</span><span class="va">compare_tests</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="package-website">Package Website<a class="anchor" aria-label="anchor" href="#package-website"></a>
 </h3>
-<p>Visit the <a href="https://kingssibal.github.io/oneMeanTest/" class="external-link">pkgdown site</a> for: - Full function reference - Detailed vignettes - Example workflows - FAQ</p>
+<p>Visit the <a href="https://kingssibal.github.io/oneMeanTest/" class="external-link">pkgdown site</a> for:</p>
+<ul>
+<li>Full function reference</li>
+<li>Detailed vignettes</li>
+<li>Example workflows</li>
+<li>FAQ</li>
+</ul>
 <hr>
 </div>
 </div>
@@ -432,7 +530,8 @@ different from 100.</code></pre>
 </tr>
 <tr class="even">
 <td><strong>Coverage</strong></td>
-<td>94.83% code coverage</td>
+<td>
+<strong>94.83%</strong> code coverage</td>
 </tr>
 <tr class="odd">
 <td><strong>Accuracy</strong></td>
@@ -444,17 +543,91 @@ different from 100.</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Run tests locally:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Check coverage:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://covr.r-lib.org" class="external-link">covr</a></span><span class="op">)</span></span>
+<div class="section level3">
+<h3 id="coverage-by-file">Coverage by File<a class="anchor" aria-label="anchor" href="#coverage-by-file"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>File</th>
+<th>Coverage</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>R/one_mean_test.R</code></td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><code>R/bootstrap.R</code></td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><code>R/assumptions.R</code></td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><code>R/descriptive_stats.R</code></td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><code>R/critical_value.R</code></td>
+<td>100.00%</td>
+</tr>
+<tr class="even">
+<td><code>R/report_methods.R</code></td>
+<td>100.00%</td>
+</tr>
+<tr class="odd">
+<td><code>R/multiple_testing.R</code></td>
+<td>98.04%</td>
+</tr>
+<tr class="even">
+<td><code>R/ggplot_visualizations.R</code></td>
+<td>97.39%</td>
+</tr>
+<tr class="odd">
+<td><code>R/nonparametric.R</code></td>
+<td>96.53%</td>
+</tr>
+<tr class="even">
+<td><code>R/print_tidy_methods.R</code></td>
+<td>96.15%</td>
+</tr>
+<tr class="odd">
+<td><code>R/interpretation_helper.R</code></td>
+<td>96.12%</td>
+</tr>
+<tr class="even">
+<td><code>R/effect_sizes.R</code></td>
+<td>94.44%</td>
+</tr>
+<tr class="odd">
+<td><code>R/plotting.R</code></td>
+<td>93.75%</td>
+</tr>
+<tr class="even">
+<td><code>R/power.R</code></td>
+<td>93.33%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="run-tests-locally">Run Tests Locally<a class="anchor" aria-label="anchor" href="#run-tests-locally"></a>
+</h3>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run all tests</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run R CMD check</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate coverage report</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://covr.r-lib.org" class="external-link">covr</a></span><span class="op">)</span></span>
 <span><span class="va">cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">package_coverage</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="http://covr.r-lib.org/reference/percent_coverage.html" class="external-link">percent_coverage</a></span><span class="op">(</span><span class="va">cov</span><span class="op">)</span></span>
-<span><span class="fu">covr</span><span class="fu">::</span><span class="fu"><a href="http://covr.r-lib.org/reference/report.html" class="external-link">report</a></span><span class="op">(</span><span class="va">cov</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">cov</span><span class="op">)</span></span></code></pre></div>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="id_-contributing">🤝 Contributing<a class="anchor" aria-label="anchor" href="#id_-contributing"></a>
@@ -463,16 +636,30 @@ different from 100.</code></pre>
 <div class="section level3">
 <h3 id="development-setup">Development Setup<a class="anchor" aria-label="anchor" href="#development-setup"></a>
 </h3>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Clone repository</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>KingSSIBAL<span class="sc">/</span>oneMeanTest.git</span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>cd oneMeanTest</span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># Install dependencies</span></span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_dev_deps</span>()</span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co"># Run checks</span></span>
-<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span>
-<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># Clone repository</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>KingSSIBAL<span class="sc">/</span>oneMeanTest.git</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>cd oneMeanTest</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co"># Install dependencies</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_dev_deps</span>()</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co"># Run checks</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="contribution-guidelines">Contribution Guidelines<a class="anchor" aria-label="anchor" href="#contribution-guidelines"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Fork the repository</li>
+<li>Create a feature branch (<code>git checkout -b feature/AmazingFeature</code>)</li>
+<li>Write tests for new functionality</li>
+<li>Ensure all tests pass and coverage remains high</li>
+<li>Update documentation</li>
+<li>Commit changes (<code>git commit -m 'Add AmazingFeature'</code>)</li>
+<li>Push to branch (<code>git push origin feature/AmazingFeature</code>)</li>
+<li>Open a Pull Request</li>
+</ol>
 <hr>
 </div>
 </div>
@@ -480,13 +667,13 @@ different from 100.</code></pre>
 <h2 id="id_-citation">📖 Citation<a class="anchor" aria-label="anchor" href="#id_-citation"></a>
 </h2>
 <p>If you use this package in your research, please cite:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">oneMeanTest2024</span>,</span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>  <span class="dt">title</span> = {oneMeanTest: One-Sample T-Test for Population Mean with Unknown Variance},</span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="dt">author</span> = {Reijel Agub},</span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="dt">year</span> = {2024},</span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.1.0, STAT 181 Project},</span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>  <span class="dt">url</span> = {https://github.com/KingSSIBAL/oneMeanTest},</span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">oneMeanTest2024</span>,</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="dt">title</span> = {oneMeanTest: One-Sample T-Test for Population Mean with Unknown Variance},</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="dt">author</span> = {Reijel Agub},</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="dt">year</span> = {2024},</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.1.0, STAT 181 Project},</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="dt">url</span> = {https://github.com/KingSSIBAL/oneMeanTest},</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>}</span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -500,8 +687,17 @@ different from 100.</code></pre>
 <h2 id="id_-acknowledgments">🎓 Acknowledgments<a class="anchor" aria-label="anchor" href="#id_-acknowledgments"></a>
 </h2>
 <p>Developed as a project for <strong>STAT 181: Statistical Computing</strong><br><strong>Institute of Statistics, University of the Philippines Los Baños</strong><br><strong>1st Semester, 2025-2026</strong></p>
-<p>Special thanks to: - Course instructors and teaching assistants - The R Core Team for statistical computing foundations - Contributors to the testthat, covr, and devtools packages</p>
+<div class="section level3">
+<h3 id="special-thanks">Special Thanks<a class="anchor" aria-label="anchor" href="#special-thanks"></a>
+</h3>
+<ul>
+<li>Course instructors and teaching assistants</li>
+<li>The R Core Team for statistical computing foundations</li>
+<li>Contributors to the <code>testthat</code>, <code>covr</code>, and <code>devtools</code> packages</li>
+<li>The R community for guidance and best practices</li>
+</ul>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="id_-contact--support">📞 Contact &amp; Support<a class="anchor" aria-label="anchor" href="#id_-contact--support"></a>
@@ -510,7 +706,7 @@ different from 100.</code></pre>
 <li>
 <strong>Author</strong>: Reijel Agub</li>
 <li>
-<strong>Email</strong>: <a href="mailto:rcagub@up.edu.ph" class="email">rcagub@up.edu.ph</a>
+<strong>Email</strong>: <a href="mailto:rcagub@up.edu.ph">rcagub@up.edu.ph</a>
 </li>
 <li>
 <strong>GitHub</strong>: <a href="https://github.com/KingSSIBAL" class="external-link">@KingSSIBAL</a>
@@ -524,18 +720,179 @@ different from 100.</code></pre>
 <div class="section level2">
 <h2 id="id_️-roadmap">🗺️ Roadmap<a class="anchor" aria-label="anchor" href="#id_%EF%B8%8F-roadmap"></a>
 </h2>
-<p>Future enhancements being considered:</p>
+<div class="section level3">
+<h3 id="id_-completed-features-v010">✅ Completed Features (v0.1.0)<a class="anchor" aria-label="anchor" href="#id_-completed-features-v010"></a>
+</h3>
+<div class="section level4">
+<h4 id="core-statistical-methods">Core Statistical Methods<a class="anchor" aria-label="anchor" href="#core-statistical-methods"></a>
+</h4>
 <ul class="task-list">
-<li><label><input type="checkbox">Effect size calculations (Cohen’s d, Hedges’ g)</label></li>
-<li><label><input type="checkbox">Non-parametric alternatives (Wilcoxon signed-rank test)</label></li>
-<li><label><input type="checkbox">Multiple testing corrections</label></li>
-<li><label><input type="checkbox">Interactive Shiny app interface</label></li>
-<li><label><input type="checkbox">Additional visualization options (ggplot2 integration)</label></li>
-<li><label><input type="checkbox">Export to more formats (HTML, PDF reports)</label></li>
+<li><label><input type="checkbox" checked>One-sample t-test with complete inference</label></li>
+<li><label><input type="checkbox" checked>Custom statistical function implementations</label></li>
+<li><label><input type="checkbox" checked>Bootstrap inference methods (100% coverage)</label></li>
+<li><label><input type="checkbox" checked>Power analysis suite (93.33% coverage)</label></li>
+<li><label><input type="checkbox" checked>Comprehensive assumption checking (100% coverage)</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="effect-sizes--fully-implemented">Effect Sizes (✨ FULLY IMPLEMENTED)<a class="anchor" aria-label="anchor" href="#effect-sizes--fully-implemented"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" checked><strong>Cohen’s d</strong> with confidence intervals</label></li>
+<li><label><input type="checkbox" checked><strong>Hedges’ g</strong> (bias-corrected for small samples)</label></li>
+<li><label><input type="checkbox" checked><strong>Glass’s delta</strong> (population SD option)</label></li>
+<li><label><input type="checkbox" checked>Bootstrap and noncentral-t CI methods</label></li>
+<li><label><input type="checkbox" checked>Effect size interpretation functions</label></li>
+<li><label><input type="checkbox" checked>Comprehensive effect size summary tables</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="non-parametric-methods--fully-implemented">Non-Parametric Methods (✨ FULLY IMPLEMENTED)<a class="anchor" aria-label="anchor" href="#non-parametric-methods--fully-implemented"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" checked><strong>Wilcoxon signed-rank test</strong> with exact/approximate p-values</label></li>
+<li><label><input type="checkbox" checked><strong>Sign test</strong> for simple alternatives</label></li>
+<li><label><input type="checkbox" checked><strong>Hodges-Lehmann estimator</strong> (pseudo-median)</label></li>
+<li><label><input type="checkbox" checked>Confidence intervals for location</label></li>
+<li><label><input type="checkbox" checked>Side-by-side test comparison function</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="multiple-testing--fully-implemented">Multiple Testing (✨ FULLY IMPLEMENTED)<a class="anchor" aria-label="anchor" href="#multiple-testing--fully-implemented"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" checked><strong>Bonferroni correction</strong></label></li>
+<li><label><input type="checkbox" checked><strong>Holm’s sequential procedure</strong></label></li>
+<li><label><input type="checkbox" checked><strong>Benjamini-Hochberg FDR control</strong></label></li>
+<li><label><input type="checkbox" checked><strong>Benjamini-Yekutieli</strong> for dependent tests</label></li>
+<li><label><input type="checkbox" checked>Multiple comparison reporting</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" checked>Base graphics plotting suite (93.75% coverage)</label></li>
+<li><label><input type="checkbox" checked><strong>ggplot2 integration</strong> (97.39% coverage)</label></li>
+<li><label><input type="checkbox" checked>Q-Q plots, histograms, boxplots</label></li>
+<li><label><input type="checkbox" checked>Distribution and CI plots</label></li>
+<li><label><input type="checkbox" checked>Power curves</label></li>
+<li><label><input type="checkbox" checked>Bootstrap distribution plots</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="reporting">Reporting<a class="anchor" aria-label="anchor" href="#reporting"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" checked>Console, Markdown, LaTeX formats (100% coverage)</label></li>
+<li><label><input type="checkbox" checked>Formatted statistical reports</label></li>
+<li><label><input type="checkbox" checked>Interpretation helpers</label></li>
+<li><label><input type="checkbox" checked>Print and tidy methods</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="quality-assurance-1">Quality Assurance<a class="anchor" aria-label="anchor" href="#quality-assurance-1"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox" checked>530+ comprehensive tests</label></li>
+<li><label><input type="checkbox" checked>94.83% code coverage</label></li>
+<li><label><input type="checkbox" checked>4-decimal accuracy validation</label></li>
+<li><label><input type="checkbox" checked>Full documentation and vignettes</label></li>
+<li><label><input type="checkbox" checked>GitHub Actions CI/CD</label></li>
+</ul>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_-in-progress">🔄 In Progress<a class="anchor" aria-label="anchor" href="#id_-in-progress"></a>
+</h3>
+<ul class="task-list">
+<li><label><input type="checkbox"><strong>Codecov Integration</strong> - Add <code>CODECOV_TOKEN</code> secret</label></li>
+<li><label><input type="checkbox"><strong>Coverage Push to 97%+</strong> - Target utils.R and ci_pvalue_helpers.R</label></li>
+<li><label><input type="checkbox"><strong>pkgdown Website Polish</strong> - Enhanced documentation site</label></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="id_-future-enhancements">🎯 Future Enhancements<a class="anchor" aria-label="anchor" href="#id_-future-enhancements"></a>
+</h3>
+<div class="section level4">
+<h4 id="advanced-statistical-methods">Advanced Statistical Methods<a class="anchor" aria-label="anchor" href="#advanced-statistical-methods"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox">Equivalence and non-inferiority tests (TOST)</label></li>
+<li><label><input type="checkbox">Bayesian one-sample t-test with Bayes factors</label></li>
+<li><label><input type="checkbox">Trimmed mean alternatives</label></li>
+<li><label><input type="checkbox">Robust standard errors</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="enhanced-visualization">Enhanced Visualization<a class="anchor" aria-label="anchor" href="#enhanced-visualization"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox">Interactive plots with <code>plotly</code></label></li>
+<li><label><input type="checkbox">Publication-ready theme defaults</label></li>
+<li><label><input type="checkbox">Power curve confidence bands</label></li>
+<li><label><input type="checkbox">Influence diagnostics plots</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="user-experience">User Experience<a class="anchor" aria-label="anchor" href="#user-experience"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox">Shiny application for point-and-click analysis</label></li>
+<li><label><input type="checkbox">HTML reports with embedded interactive plots</label></li>
+<li><label><input type="checkbox">PDF and Word document export</label></li>
+<li><label><input type="checkbox">APA-style statistical reporting templates</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="performance--scalability">Performance &amp; Scalability<a class="anchor" aria-label="anchor" href="#performance--scalability"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox">Rcpp integration for bootstrap routines</label></li>
+<li><label><input type="checkbox">Parallel processing for simulations</label></li>
+<li><label><input type="checkbox">Progress bars for long computations</label></li>
+<li><label><input type="checkbox">Large dataset optimizations</label></li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="community--distribution">Community &amp; Distribution<a class="anchor" aria-label="anchor" href="#community--distribution"></a>
+</h4>
+<ul class="task-list">
+<li><label><input type="checkbox">CRAN submission</label></li>
+<li><label><input type="checkbox">rOpenSci peer review</label></li>
+<li><label><input type="checkbox">Conference presentations</label></li>
+<li><label><input type="checkbox">Academic publication</label></li>
 </ul>
 <hr>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="id_-project-status">📈 Project Status<a class="anchor" aria-label="anchor" href="#id_-project-status"></a>
+</h2>
+<p><strong>Current Version</strong>: 0.1.0 (Experimental)<br><strong>Status</strong>: Active Development<br><strong>Submission Deadline</strong>: December 2, 2025<br><strong>Presentation Date</strong>: December 3, 2025<br><strong>Last Updated</strong>: November 30, 2025</p>
+<div class="section level3">
+<h3 id="implementation-summary">Implementation Summary<a class="anchor" aria-label="anchor" href="#implementation-summary"></a>
+</h3>
+<p>This package <strong>exceeds project requirements</strong> with:</p>
+<p>✅ <strong>Core one-sample t-test</strong> (100% coverage)<br>
+✅ <strong>Custom statistical implementations</strong> validated to 4 decimals<br>
+✅ <strong>Bootstrap methods</strong> (100% coverage)<br>
+✅ <strong>Power analysis</strong> (93.33% coverage)<br>
+✅ <strong>Assumption checking</strong> (100% coverage)<br>
+✅ <strong>Effect sizes</strong> - Cohen’s d, Hedges’ g, Glass’s delta (94.44% coverage)<br>
+✅ <strong>Non-parametric tests</strong> - Wilcoxon, Sign test (96.53% coverage)<br>
+✅ <strong>Multiple testing corrections</strong> (98.04% coverage)<br>
+✅ <strong>Dual visualization systems</strong> - base + ggplot2 (97.39% coverage)<br>
+✅ <strong>Multiple report formats</strong> (100% coverage)<br>
+✅ <strong>530+ tests with 94.83% overall coverage</strong></p>
+<p><strong>The package is presentation-ready and production-quality!</strong> 🎉</p>
+<hr>
 <p><strong>⭐ If you find this package useful, please star the repository!</strong></p>
-<p><a href="https://github.com/KingSSIBAL/oneMeanTest/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/KingSSIBAL/oneMeanTest?style=social" alt="GitHub stars"></a> <a href="https://github.com/KingSSIBAL/oneMeanTest/network/members" class="external-link"><img src="https://img.shields.io/github/forks/KingSSIBAL/oneMeanTest?style=social" alt="GitHub forks"></a></p>
+<p><a href="https://github.com/KingSSIBAL/oneMeanTest/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/KingSSIBAL/oneMeanTest?style=social" alt="GitHub stars"></a> <a href="https://github.com/KingSSIBAL/oneMeanTest/network/members" class="external-link"><img src="https://img.shields.io/github/forks/KingSSIBAL/oneMeanTest?style=social" alt="GitHub forks"></a> <a href="https://github.com/KingSSIBAL/oneMeanTest/issues" class="external-link"><img src="https://img.shields.io/github/issues/KingSSIBAL/oneMeanTest" alt="GitHub issues"></a></p>
+<hr>
+<p><strong>Built with ❤️ and R</strong></p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -565,7 +922,7 @@ different from 100.</code></pre>
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/KingSSIBAL/oneMeanTest" class="external-link"><img src="https://codecov.io/gh/KingSSIBAL/oneMeanTest/graph/badge.svg?token=YOUR_TOKEN_HERE" alt="Test Coverage"></a></li>
+<li><a href="https://codecov.io/gh/KingSSIBAL/oneMeanTest" class="external-link"><img src="https://codecov.io/gh/KingSSIBAL/oneMeanTest/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>
 </ul>
