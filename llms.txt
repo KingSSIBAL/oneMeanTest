@@ -318,13 +318,14 @@ workflows - FAQ
 
 This package maintains high quality standards:
 
-| Metric            | Status                         |
-|-------------------|--------------------------------|
-| **Tests**         | 360+ tests passing             |
-| **Coverage**      | 85%+ code coverage             |
-| **Accuracy**      | 4-decimal validation vs base R |
-| **R CMD check**   | 0 errors, 0 warnings           |
-| **Documentation** | 100% functions documented      |
+| Metric            | Status                                                                                                                                                                                 |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **R CMD Check**   | [![R-CMD-check](https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KingSSIBAL/oneMeanTest/actions/workflows/R-CMD-check.yaml) |
+| **Test Coverage** | [![codecov](https://codecov.io/gh/KingSSIBAL/oneMeanTest/graph/badge.svg)](https://codecov.io/gh/KingSSIBAL/oneMeanTest)                                                               |
+| **Tests**         | 530+ tests passing                                                                                                                                                                     |
+| **Coverage**      | 94.83% code coverage                                                                                                                                                                   |
+| **Accuracy**      | 4-decimal validation vs base R                                                                                                                                                         |
+| **Documentation** | 100% functions documented                                                                                                                                                              |
 
 Run tests locally:
 
