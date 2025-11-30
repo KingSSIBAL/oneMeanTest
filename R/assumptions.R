@@ -100,7 +100,11 @@ check_assumptions <- function(x, alpha = 0.05, verbose = TRUE) {
   # This is a robust method based on the interquartile range
   
   # Calculate first and third quartiles (Q1 and Q3)
-  qs <- stats::quantile(x, probs = c(0.25, 0.75), names = FALSE)
+  # BUILT-IN (commented out):
+  # qs <- stats::quantile(x, probs = c(0.25, 0.75), names = FALSE)
+  
+  # CUSTOM IMPLEMENTATION:
+  qs <- .custom_quantile(x, probs = c(0.25, 0.75), names = FALSE)
   
   # Calculate interquartile range: IQR = Q3 - Q1
   # IQR represents the middle 50% of the data

@@ -113,7 +113,11 @@ bootstrap_ttest <- function(
   for (b in seq_len(nboot)) {
     # Draw bootstrap sample: sample with replacement from original data
     # Size equals original sample size to preserve sample size variability
-    xb <- sample(x, size = n, replace = TRUE)
+    # BUILT-IN (commented out):
+    # xb <- sample(x, size = n, replace = TRUE)
+    
+    # CUSTOM IMPLEMENTATION:
+    xb <- .custom_sample(x, size = n, replace = TRUE)
     
     # Calculate statistics for this bootstrap sample
     n_b <- length(xb)
@@ -163,11 +167,20 @@ bootstrap_ttest <- function(
   # This is the bootstrap percentile interval, one of several bootstrap CI methods
   
   alpha <- 1 - conf.level
-  ci_boot <- stats::quantile(
+  # BUILT-IN (commented out):
+  # ci_boot <- stats::quantile(
+  #   mean_boot,
+  #   probs = c(alpha / 2, 1 - alpha / 2),  # Lower and upper percentiles
+  #   names = FALSE
+  # )
+  
+  # CUSTOM IMPLEMENTATION:
+  ci_boot <- .custom_quantile(
     mean_boot,
     probs = c(alpha / 2, 1 - alpha / 2),  # Lower and upper percentiles
     names = FALSE
   )
+  
   names(ci_boot) <- c("lower", "upper")
 
   # ============================================================

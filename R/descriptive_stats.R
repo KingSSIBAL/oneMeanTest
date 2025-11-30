@@ -42,7 +42,13 @@ descriptive_stats <- function(x, digits = 3) {
   var_x <- stats::var(x)
   se_x <- sd_x / sqrt(n)
   median_x <- stats::median(x)
-  qs <- stats::quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), names = FALSE)
+  
+  # BUILT-IN (commented out):
+  # qs <- stats::quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), names = FALSE)
+  
+  # CUSTOM IMPLEMENTATION:
+  qs <- .custom_quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), names = FALSE)
+  
   names(qs) <- c("min", "q1", "median", "q3", "max")
   iqr_x <- qs["q3"] - qs["q1"]
 

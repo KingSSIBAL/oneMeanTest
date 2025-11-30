@@ -39,6 +39,7 @@ with attribute \code{conf.level}.}
 \item{estimate}{Named numeric vector with the sample mean.}
 \item{null.value}{Named numeric vector with the hypothesized mean (\code{mu0}).}
 \item{alternative}{Character string with the alternative hypothesis.}
+\item{t.critical}{Named vector with critical value(s) for the test.}
 \item{method}{Description of the method used.}
 \item{data.name}{Character string with the name of the data vector.}
 \item{sample.stats}{List with \code{n}, \code{mean}, \code{sd}, and \code{se}.}

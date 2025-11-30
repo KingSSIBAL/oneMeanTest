@@ -56,15 +56,27 @@
   
   if (alternative == "two.sided") {
     # Two-tailed: P(|T| > |t_obs|) = 2 * P(T > |t_obs|)
-    p <- 2 * stats::pt(abs(t_stat), df = df, lower.tail = FALSE)
+    # BUILT-IN (commented out):
+    # p <- 2 * stats::pt(abs(t_stat), df = df, lower.tail = FALSE)
+    
+    # CUSTOM IMPLEMENTATION:
+    p <- 2 * .custom_pt(abs(t_stat), df = df, lower.tail = FALSE)
     
   } else if (alternative == "greater") {
     # Right-tailed: P(T > t_obs)
-    p <- stats::pt(t_stat, df = df, lower.tail = FALSE)
+    # BUILT-IN (commented out):
+    # p <- stats::pt(t_stat, df = df, lower.tail = FALSE)
+    
+    # CUSTOM IMPLEMENTATION:
+    p <- .custom_pt(t_stat, df = df, lower.tail = FALSE)
     
   } else { # "less"
     # Left-tailed: P(T < t_obs)
-    p <- stats::pt(t_stat, df = df, lower.tail = TRUE)
+    # BUILT-IN (commented out):
+    # p <- stats::pt(t_stat, df = df, lower.tail = TRUE)
+    
+    # CUSTOM IMPLEMENTATION:
+    p <- .custom_pt(t_stat, df = df, lower.tail = TRUE)
   }
   
   p
@@ -92,7 +104,11 @@
   se <- sd / sqrt(n)
   
   # Critical value from t-distribution (two-tailed)
-  t_crit <- stats::qt(1 - alpha / 2, df = df)
+  # BUILT-IN (commented out):
+  # t_crit <- stats::qt(1 - alpha / 2, df = df)
+  
+  # CUSTOM IMPLEMENTATION:
+  t_crit <- .custom_qt(1 - alpha / 2, df = df)
   
   # Margin of error: ME = t_crit * SE
   margin <- t_crit * se
