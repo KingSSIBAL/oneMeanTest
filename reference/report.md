@@ -1,16 +1,12 @@
-# Report Methods for oneMeanTest Objects
+# Report Methods for One-Sample T-Test
 
-Generate formatted reports of t-test results in different output
-formats. This provides an alternative to format_ttest_report() with
-support for multiple output formats.
+Functions to generate formatted reports of test results in various
+formats (text, markdown, LaTeX) Generate report from test results
 
 ## Usage
 
 ``` r
-report(x, format = "console", ...)
-
-# S3 method for class 'oneMeanTest'
-report(x, format = "console", ...)
+report(x, format = c("text", "markdown", "latex"), file = NULL, ...)
 ```
 
 ## Arguments
@@ -21,31 +17,20 @@ report(x, format = "console", ...)
 
 - format:
 
-  Output format: "console", "markdown", or "latex"
+  Output format: "text", "markdown", or "latex"
+
+- file:
+
+  Optional file path to save report
 
 - ...:
 
-  Additional arguments (currently unused)
+  Additional arguments
 
 ## Value
 
-Formatted report as character string
+Character string with formatted report (invisible if file specified)
 
-## Examples
+## Details
 
-``` r
-if (FALSE) { # \dontrun{
-set.seed(123)
-x <- rnorm(30, mean = 5, sd = 2)
-result <- one_mean_test(x, mu0 = 5)
-
-# Console format (default)
-cat(report(result, format = "console"))
-
-# Markdown format
-cat(report(result, format = "markdown"))
-
-# LaTeX format
-cat(report(result, format = "latex"))
-} # }
-```
+Creates a formatted report of one-sample t-test results

@@ -41,7 +41,7 @@ library(oneMeanTest)
   Bootstrap-based one-sample t-test: bootstrap distribution of the
   t-statistic, bootstrap p-value, and percentile CI for the mean.
 
-- [`power_analysis_one_mean()`](reference/power_analysis_one_mean.md)  
+- `power_analysis_one_mean()`  
   Wrapper around
   [`stats::power.t.test()`](https://rdrr.io/r/stats/power.t.test.html)
   for one-sample t-test power analysis (solve for power or for required

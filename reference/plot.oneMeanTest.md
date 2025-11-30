@@ -1,69 +1,28 @@
-# Plot methods for one-sample mean test objects
+# Plot method for oneMeanTest objects
 
-Plot methods for objects of class `"oneMeanTest"` produced by
-[`one_mean_test`](one_mean_test.md). Different values of `which` produce
-different visualizations:
+Creates visualizations of one-sample t-test results
 
 ## Usage
 
 ``` r
 # S3 method for class 'oneMeanTest'
-plot(x, which = c("t", "hist", "qq", "box", "ci"), ...)
+plot(x, type = "distribution", ...)
 ```
 
 ## Arguments
 
 - x:
 
-  An object of class `"oneMeanTest"`.
+  Object of class oneMeanTest
 
-- which:
+- type:
 
-  Character string specifying which plot to draw. One of `"t"`,
-  `"hist"`, `"qq"`, `"box"`, or `"ci"`.
+  Type of plot: "distribution", "ci", "diagnostic", or "all"
 
 - ...:
 
-  Additional arguments passed on to the underlying graphics functions
-  (currently unused).
+  Additional arguments passed to plotting functions
 
 ## Value
 
-Invisibly returns `x` after producing a plot.
-
-## Details
-
-- `"t"`: t-distribution with the observed test statistic and critical
-  values for the chosen `alpha`.
-
-- `"hist"`: histogram of the data with vertical lines for the sample
-  mean and hypothesized mean `mu0`.
-
-- `"qq"`: normal Q-Q plot of the data with a reference line.
-
-- `"box"`: boxplot of the data with a vertical line at `mu0`.
-
-- `"ci"`: confidence interval plot for the mean.
-
-For `"hist"`, `"qq"`, and `"box"`, the raw data must be stored in the
-object via `attr(x, "data") <- your_data`.
-
-## Examples
-
-``` r
-set.seed(123)
-x <- rnorm(30, mean = 5, sd = 2)
-res <- one_mean_test(x, mu0 = 5, check_assumptions = FALSE)
-attr(res, "data") <- x
-
-plot(res, which = "t")
-
-plot(res, which = "ci")
-
-plot(res, which = "hist")
-
-plot(res, which = "qq")
-
-plot(res, which = "box")
-
-```
+Invisible NULL (plots are created as side effect)

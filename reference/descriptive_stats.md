@@ -7,7 +7,7 @@ quartiles, range, and interquartile range (IQR).
 ## Usage
 
 ``` r
-descriptive_stats(x, digits = 3)
+descriptive_stats(x, digits = 4)
 ```
 
 ## Arguments
@@ -52,8 +52,8 @@ scores, typically the same type of data used in the one-sample t-test.
 ``` r
 x <- c(1, 2, 3, 4, 5)
 descriptive_stats(x)
-#>  n mean median    sd variance    se min q1 q3 max iqr
-#>  5    3      3 1.581      2.5 0.707   1  2  4   5   2
+#>  n mean median     sd variance     se min q1 q3 max iqr
+#>  5    3      3 1.5811      2.5 0.7071   1  2  4   5   2
 
 # Without rounding
 descriptive_stats(x, digits = NULL)

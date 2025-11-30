@@ -47,7 +47,7 @@ error, quartiles, range, and interquartile range (IQR).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">descriptive_stats</span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">descriptive_stats</span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -85,8 +85,8 @@ scores, typically the same type of data used in the one-sample t-test.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">descriptive_stats</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  n mean median    sd variance    se min q1 q3 max iqr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5    3      3 1.581      2.5 0.707   1  2  4   5   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  n mean median     sd variance     se min q1 q3 max iqr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5    3      3 1.5811      2.5 0.7071   1  2  4   5   2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Without rounding</span></span></span>
 <span class="r-in"><span><span class="fu">descriptive_stats</span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>

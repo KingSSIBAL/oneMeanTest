@@ -115,9 +115,7 @@ classical t-test results as part of your discussion.
 
 ## Power analysis
 
-Finally,
-[`power_analysis_one_mean()`](../reference/power_analysis_one_mean.md)
-wraps
+Finally, `power_analysis_one_mean()` wraps
 [`stats::power.t.test()`](https://rdrr.io/r/stats/power.t.test.html) for
 one-sample t-tests.
 
@@ -146,8 +144,7 @@ In this vignette, we:
   [`one_mean_test()`](../reference/one_mean_test.md);  
 - checked assumptions, created informative plots, and compared
   bootstrap-based inference;  
-- explored power analysis using
-  [`power_analysis_one_mean()`](../reference/power_analysis_one_mean.md).
+- explored power analysis using `power_analysis_one_mean()`.
 
 You can adapt this workflow to your own data to analyze a single
 population mean with unknown variance and to create materials for your
