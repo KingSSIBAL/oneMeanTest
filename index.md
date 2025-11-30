@@ -393,7 +393,7 @@ See [LICENSE.md](LICENSE.md) for details.
 
 Developed as a project for **STAT 181: Statistical Computing**  
 **Institute of Statistics, University of the Philippines Los Baños**  
-**1st Semester, 2024-2025**
+**1st Semester, 2025-2026**
 
 Special thanks to: - Course instructors and teaching assistants - The R
 Core Team for statistical computing foundations - Contributors to the
